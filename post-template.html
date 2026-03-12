@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Network Scanning with Nmap | Emir Yildirim</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #ffffff; background: linear-gradient(-45deg, #0f172a, #1e293b, #020617, #172554); background-size: 400% 400%; animation: gradientBG 15s ease infinite; line-height: 1.6; min-height: 100vh; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .navbar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: #60a5fa; text-decoration: none; }
+        .nav-links a { color: #e2e8f0; text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #3b82f6; }
+
+
+        .article-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
+        
+        .back-link { display: inline-block; color: #94a3b8; text-decoration: none; margin-bottom: 30px; transition: color 0.3s; font-weight: 500; }
+        .back-link:hover { color: #60a5fa; }
+        .back-link i { margin-right: 8px; }
+
+        .article-wrapper {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            border-top: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .article-header { border-bottom: 1px solid #334155; padding-bottom: 20px; margin-bottom: 30px; }
+        .article-title { margin: 0 0 15px 0; font-size: 2.5rem; color: #fff; line-height: 1.2; }
+        .article-meta { color: #94a3b8; font-size: 0.95rem; display: flex; gap: 20px; align-items: center; }
+        .article-meta i { color: #3b82f6; }
+        .tag { background: #1e293b; padding: 4px 12px; border-radius: 15px; font-size: 0.85rem; color: #94a3b8; border: 1px solid #334155; }
+
+
+        .article-content { font-size: 1.1rem; color: #e2e8f0; line-height: 1.8; }
+        .article-content h2 { color: #60a5fa; margin-top: 40px; font-size: 1.8rem; }
+        .article-content h3 { color: #93c5fd; margin-top: 30px; font-size: 1.4rem; }
+        .article-content p { margin-bottom: 20px; }
+        .article-content a { color: #3b82f6; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.3s; }
+        .article-content a:hover { border-bottom-color: #3b82f6; }
+        .article-content ul { margin-bottom: 20px; padding-left: 20px; }
+        .article-content li { margin-bottom: 10px; }
+
+
+        pre {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            border: 1px solid #334155;
+            border-left: 4px solid #3b82f6;
+            margin: 25px 0;
+        }
+        code { font-family: 'Courier New', Courier, monospace; color: #a5b4fc; font-size: 0.95rem; }
+        
+
+        p code, li code { background: #1e293b; padding: 2px 6px; border-radius: 4px; color: #93c5fd; font-size: 0.95rem; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">EY.</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html">Experience & Projects</a>
+            <a href="blog.html" class="active">Blog</a>
+        </div>
+    </nav>
+
+    <div class="article-container">
+        <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Articles</a>
+        
+        <article class="article-wrapper">
+            <header class="article-header">
+                <h1 class="article-title">Comprehensive Network Scanning with Nmap</h1>
+                <div class="article-meta">
+                    <span><i class="far fa-calendar-alt"></i> March 12, 2026</span>
+                    <span><i class="far fa-clock"></i> 5 min read</span>
+                    <span class="tag">Network Security</span>
+                </div>
+            </header>
+
+            <div class="article-content">
+                <p>During my cybersecurity internship, one of the most fundamental tools I use daily is <code>nmap</code> (Network Mapper). It is essential for network discovery and security auditing.</p>
+
+                <h2>Basic Scanning Techniques</h2>
+                <p>Before diving into complex scripts, it is crucial to understand the basics. A simple ping scan allows us to see which hosts are alive on a subnet without sending any packets to ports.</p>
+                
+                <pre><code># Perform a ping scan on a /24 subnet
+nmap -sn 192.168.1.0/24</code></pre>
+
+                <h2>Advanced Service Detection</h2>
+                <p>Once active hosts are identified, the next step is determining what services and versions are running on open ports. This helps in mapping vulnerabilities to specific service versions.</p>
+
+                <ul>
+                    <li><strong>-sV:</strong> Probes open ports to determine service/version info.</li>
+                    <li><strong>-sC:</strong> Runs default Nmap scripts for advanced discovery.</li>
+                    <li><strong>-p-:</strong> Scans all 65535 ports instead of the default 1000.</li>
+                </ul>
+
+                <pre><code># Scan all ports with version detection and default scripts
+nmap -p- -sV -sC 10.10.10.5</code></pre>
+
+                <h2>Conclusion</h2>
+                <p>Understanding the exact flags to use in different scenarios saves time and reduces noise on the network. In the next post, I will cover how to use Burp Suite to analyze the web applications hosted on the ports we just discovered.</p>
+            </div>
+        </article>
+    </div>
+
+</body>
+</html>
