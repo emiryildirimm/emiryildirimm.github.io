@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Me | Emir Yildirim</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #ffffff; background: linear-gradient(-45deg, #0f172a, #1e293b, #020617, #172554); background-size: 400% 400%; animation: gradientBG 15s ease infinite; line-height: 1.6; min-height: 100vh; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .navbar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: #60a5fa; text-decoration: none; }
+        .nav-links a { color: #e2e8f0; text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #3b82f6; }
+
+        .container { max-width: 900px; margin: 50px auto; padding: 0 20px; }
+        .page-title { text-align: center; margin-bottom: 40px; font-size: 2.5rem; color: #60a5fa; }
+        
+        .section-card {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+        .section-card h3 { margin-top: 0; color: #fff; font-size: 1.5rem; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        
+        .skill-tags span { display: inline-block; background: #2563eb; padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; margin: 5px 5px 0 0; font-weight: bold; }
+        .cert-list li { margin-bottom: 10px; color: #cbd5e1; }
+        .cert-list strong { color: #60a5fa; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">EY.</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html" class="active">About</a>
+            <a href="projects.html">Experience & Projects</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">About Me</h1>
+
+        <div class="section-card">
+            <h3><i class="fas fa-user-shield"></i> Professional Summary</h3>
+            <p>I am a proactive Computer Engineering undergraduate at Ataturk University, deeply passionate about Network Security and Ethical Hacking. I have gained practical, hands-on experience in vulnerability assessment, Linux environments, and secure software development through multiple internships.</p>
+            <p>Committed to continuous learning, I actively focus on software development lifecycles, network architecture, and system security. Beyond technical roles, I also serve as a C1-level English tutor, which enhances my ability to communicate complex technical concepts clearly and effectively.</p>
+        </div>
+
+        <div class="section-card">
+            <h3><i class="fas fa-graduation-cap"></i> Education & Leadership</h3>
+            <p><strong>B.S. in Computer Engineering</strong><br>Ataturk University, Erzurum (Sep 2022 - Jun 2026)</p>
+            <p><strong>Core Team Member</strong><br>Google Developer Groups (GDG) - Ataturk University<br><em>Actively managed and organized technology-focused community events, workshops, and networking sessions.</em></p>
+        </div>
+
+        <div class="section-card">
+            <h3><i class="fas fa-code"></i> Core Competencies</h3>
+            <div class="skill-tags">
+                <span>Network Security</span>
+                <span>Vulnerability Assessment</span>
+                <span>Penetration Testing</span>
+                <span>Linux</span>
+                <span>Nmap & Wireshark</span>
+                <span>Burp Suite</span>
+                <span>Docker</span>
+                <span>JavaScript / React / Node.js</span>
+                <span>PHP</span>
+                <span>MongoDB / MySQL</span>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h3><i class="fas fa-certificate"></i> Certifications & Training</h3>
+            <ul class="cert-list">
+                <li><strong>SOC Analyst Training (5 Months)</strong> - Cisco & Akbank</li>
+                <li><strong>Cyber Security SOC Analyst Training - SIEM(Splunk) (80 Hours)</strong> - Udemy</li>
+                <li><strong>Cyber Security Training (50 Hours)</strong> - Techcareer.net</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+</html>
