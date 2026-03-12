@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects | Emir Yildirim</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Ayni CSS kodlarini buraya da koyuyoruz ki tasarim bozulmasin */
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #ffffff; background: linear-gradient(-45deg, #0f172a, #1e293b, #020617, #172554); background-size: 400% 400%; animation: gradientBG 15s ease infinite; line-height: 1.6; min-height: 100vh; }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .navbar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: #60a5fa; text-decoration: none; }
+        .nav-links a { color: #e2e8f0; text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: #3b82f6; }
+
+        .container { max-width: 900px; margin: 50px auto; padding: 0 20px; }
+        
+        /* Proje Kartlari Icin Ozel CSS */
+        .page-title { text-align: center; margin-bottom: 40px; font-size: 2.5rem; color: #60a5fa; }
+        
+        .card {
+            background: rgba(30, 41, 59, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3b82f6;
+            backdrop-filter: blur(10px);
+        }
+        .card h3 { margin-top: 0; color: #fff; font-size: 1.5rem; }
+        .card span.date { color: #94a3b8; font-size: 0.9rem; display: block; margin-bottom: 15px; }
+        .tech-stack span { background: #2563eb; padding: 5px 10px; border-radius: 15px; font-size: 0.8rem; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">EY.</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html" class="active">Experience & Projects</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h1 class="page-title">Experience & Projects</h1>
+
+        <div class="card">
+            <h3>Cybersecurity Intern</h3>
+            <span class="date">February 2026 - Present</span>
+            <p>Focusing on network security, service exploitation, and vulnerability assessments.</p>
+            <ul>
+                <li>Utilized Nmap for comprehensive network scanning and mapping.</li>
+                <li>Analyzed system architectures to identify potential security flaws.</li>
+            </ul>
+            <div class="tech-stack">
+                <span>Nmap</span>
+                <span>Networking</span>
+                <span>Security Analysis</span>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

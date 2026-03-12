@@ -3,19 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emir Yildirim - Cybersecurity Notes</title>
+    <title>Emir Yildirim | Cybersecurity</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Genel Ayarlar ve Dinamik Arka Plan */
         body {
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #ffffff;
             margin: 0;
-            padding: 50px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #ffffff;
+            background: linear-gradient(-45deg, #0f172a, #1e293b, #020617, #172554);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            line-height: 1.6;
+            min-height: 100vh;
         }
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Navigasyon Menusu (Navbar) */
+        .navbar {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #334155;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #60a5fa;
+            text-decoration: none;
+        }
+        .nav-links a {
+            color: #e2e8f0;
+            text-decoration: none;
+            margin-left: 20px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            color: #3b82f6;
+        }
+
+        /* Ana Icerik Kutusu */
+        .container {
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        /* Profil Bilesenleri */
+        .profile-pic {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 3px solid #3b82f6;
+            object-fit: cover;
+            margin-bottom: 20px;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+        h1 { margin: 0; font-size: 3rem; letter-spacing: 1px; }
+        h2 { margin: 10px 0 30px; font-size: 1.2rem; color: #94a3b8; font-weight: 400; }
+
+        /* Butonlar ve Sosyal Medya */
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            margin: 5px;
+            border-radius: 30px;
+            text-decoration: none;
+            color: #fff;
+            background-color: #2563eb;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        .btn:hover { background-color: #1d4ed8; transform: translateY(-2px); }
+        .social-links { margin-top: 30px; }
+        .social-links a { color: #94a3b8; font-size: 1.8rem; margin: 0 15px; transition: color 0.3s; }
+        .social-links a:hover { color: #3b82f6; transform: scale(1.1); display: inline-block; }
     </style>
 </head>
 <body>
-    <h1>Building from Scratch</h1>
-    <p>My cybersecurity internship notes and network scanning logs will be available here soon.</p>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">EY.</a>
+        <div class="nav-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html">Experience & Projects</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <img src="profile.jpg" alt="Emir Yildirim" class="profile-pic">
+        <h1>Emir Yildirim</h1>
+        <h2>Computer Engineering Student | Cybersecurity Enthusiast</h2>
+        
+        <div>
+            <a href="Emir_Yildirim_CV.pdf" download class="btn"><i class="fas fa-download"></i> Download Resume</a>
+        </div>
+
+        <div class="social-links">
+            <a href="https://github.com/emiryildirimm" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+
 </body>
 </html>
