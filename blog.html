@@ -1,57 +1,137 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog | Emir Yildirim</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #ffffff; background: linear-gradient(-45deg, #0f172a, #1e293b, #020617, #172554); background-size: 400% 400%; animation: gradientBG 15s ease infinite; line-height: 1.6; min-height: 100vh; }
+        /* CSS Değişkenleri */
+        :root {
+            --bg-1: #f8fafc;
+            --bg-2: #e2e8f0;
+            --bg-3: #f1f5f9;
+            --bg-4: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --border-color: #cbd5e1;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-1: #0f172a;
+            --bg-2: #1e293b;
+            --bg-3: #020617;
+            --bg-4: #172554;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --nav-bg: rgba(15, 23, 42, 0.8);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: #334155;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --shadow: rgba(59, 130, 246, 0.4);
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: var(--text-main); 
+            background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            line-height: 1.6; 
+            min-height: 100vh; 
+            transition: color 0.4s ease, background 0.4s ease; 
+        }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
-        .navbar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
-        .nav-logo { font-size: 1.5rem; font-weight: bold; color: #60a5fa; text-decoration: none; }
-        .nav-links a { color: #e2e8f0; text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: #3b82f6; }
+        .navbar { 
+            background: var(--nav-bg); 
+            backdrop-filter: blur(10px); 
+            padding: 15px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border-color); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100; 
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        /* Buton Stili */
+        #theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin-left: 25px;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+        #theme-toggle:hover { color: var(--accent); transform: scale(1.1); }
 
         .container { max-width: 900px; margin: 50px auto; padding: 0 20px; }
-        .page-title { text-align: center; margin-bottom: 40px; font-size: 2.5rem; color: #60a5fa; }
+        .page-title { text-align: center; margin-bottom: 40px; font-size: 2.5rem; color: var(--accent); transition: color 0.4s ease;}
         
         .blog-card {
-            background: rgba(30, 41, 59, 0.7);
+            background: var(--card-bg);
             padding: 30px;
             border-radius: 15px;
             margin-bottom: 30px;
-            border-left: 4px solid #3b82f6;
+            border-left: 4px solid var(--accent);
             backdrop-filter: blur(10px);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.4s ease, border-color 0.4s ease;
         }
         .blog-card:hover { 
             transform: translateY(-5px); 
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 20px var(--shadow);
         }
         .blog-card h3 { margin: 0 0 10px 0; font-size: 1.6rem; }
-        .blog-card h3 a { color: #ffffff; text-decoration: none; transition: color 0.3s; }
-        .blog-card h3 a:hover { color: #60a5fa; }
+        .blog-card h3 a { color: var(--text-main); text-decoration: none; transition: color 0.3s; }
+        .blog-card h3 a:hover { color: var(--accent); }
         
-        .blog-meta { color: #94a3b8; font-size: 0.9rem; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; }
-        .blog-meta i { color: #3b82f6; }
+        .blog-meta { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; display: flex; gap: 15px; align-items: center; transition: color 0.4s ease; }
+        .blog-meta i { color: var(--accent); transition: color 0.4s ease; }
         
-        .blog-summary { color: #cbd5e1; margin-bottom: 20px; }
+        .blog-summary { color: var(--text-muted); margin-bottom: 20px; transition: color 0.4s ease;}
         
         .read-more {
             display: inline-block;
-            color: #60a5fa;
+            color: var(--accent);
             text-decoration: none;
             font-weight: bold;
             font-size: 0.95rem;
             transition: color 0.3s;
         }
-        .read-more:hover { color: #3b82f6; }
+        .read-more:hover { color: var(--accent-hover); }
         .read-more i { margin-left: 5px; font-size: 0.8rem; }
         
-        .tag { background: #1e293b; padding: 4px 10px; border-radius: 15px; font-size: 0.8rem; color: #94a3b8; border: 1px solid #334155; }
+        .tag { 
+            background: var(--bg-2); 
+            padding: 4px 10px; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            color: var(--text-muted); 
+            border: 1px solid var(--border-color);
+            transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+        }
     </style>
 </head>
 <body>
@@ -63,6 +143,7 @@
             <a href="about.html">About</a>
             <a href="projects.html">Experience & Projects</a>
             <a href="blog.html" class="active">MyNotes</a>
+            <button id="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
         </div>
     </nav>
 
@@ -79,6 +160,32 @@
             <a href="post-template.html" class="read-more">Read Article <i class="fas fa-arrow-right"></i></a>
         </article>
     </div>
+
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const icon = toggleBtn.querySelector('i');
+        
+        if (document.documentElement.getAttribute('data-theme') === 'light') {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            let currentTheme = document.documentElement.getAttribute('data-theme');
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            if (newTheme === 'light') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+    </script>
 
 </body>
 </html>

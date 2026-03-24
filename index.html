@@ -1,96 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emir Yildirim | Cybersecurity</title>
-    <link rel="icon" type="image/png" href="favicon.svg">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
     <style>
+        :root {
+            --bg-1: #f8fafc;
+            --bg-2: #e2e8f0;
+            --bg-3: #f1f5f9;
+            --bg-4: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --border-color: #cbd5e1;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+
+        [data-theme="dark"] {
+            --bg-1: #0f172a;
+            --bg-2: #1e293b;
+            --bg-3: #020617;
+            --bg-4: #172554;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --nav-bg: rgba(15, 23, 42, 0.8);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: #334155;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --shadow: rgba(59, 130, 246, 0.4);
+        }
 
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #ffffff;
-            background: linear-gradient(-45deg, #0f172a, #1e293b, #020617, #172554);
+            color: var(--text-main);
+            background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4));
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             line-height: 1.6;
             min-height: 100vh;
+            transition: color 0.4s ease, background 0.4s ease; /* Yumusak gecis efekti */
         }
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
 
         .navbar {
-            background: rgba(15, 23, 42, 0.8);
+            background: var(--nav-bg);
             backdrop-filter: blur(10px);
             padding: 15px 30px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #334155;
+            border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: background 0.4s ease, border-color 0.4s ease;
         }
-        .nav-logo {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #60a5fa;
-            text-decoration: none;
-        }
-        .nav-links a {
-            color: #e2e8f0;
-            text-decoration: none;
-            margin-left: 20px;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-        .nav-links a:hover, .nav-links a.active {
-            color: #3b82f6;
-        }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
 
 
-        .container {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 0 20px;
-            text-align: center;
+        #theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin-left: 25px;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
         }
+        #theme-toggle:hover { color: var(--accent); transform: scale(1.1); }
 
 
-        .profile-pic {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            border: 3px solid #3b82f6;
-            object-fit: cover;
-            margin-bottom: 20px;
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
-        }
-        h1 { margin: 0; font-size: 3rem; letter-spacing: 1px; }
-        h2 { margin: 10px 0 30px; font-size: 1.2rem; color: #94a3b8; font-weight: 400; }
+        .container { max-width: 900px; margin: 50px auto; padding: 0 20px; text-align: center; }
+        .profile-pic { width: 180px; height: 180px; border-radius: 50%; border: 3px solid var(--accent); object-fit: cover; margin-bottom: 20px; box-shadow: 0 0 20px var(--shadow); transition: border-color 0.4s ease, box-shadow 0.4s ease; }
+        h1 { margin: 0; font-size: 3rem; letter-spacing: 1px; color: var(--text-main); transition: color 0.4s ease; }
+        h2 { margin: 10px 0 30px; font-size: 1.2rem; color: var(--text-muted); font-weight: 400; transition: color 0.4s ease; }
 
-
-        .btn {
-            display: inline-block;
-            padding: 12px 30px;
-            margin: 5px;
-            border-radius: 30px;
-            text-decoration: none;
-            color: #fff;
-            background-color: #2563eb;
-            transition: all 0.3s ease;
-            font-weight: bold;
-        }
+        .btn { display: inline-block; padding: 12px 30px; margin: 5px; border-radius: 30px; text-decoration: none; color: #fff; background-color: #2563eb; transition: all 0.3s ease; font-weight: bold; }
         .btn:hover { background-color: #1d4ed8; transform: translateY(-2px); }
         .social-links { margin-top: 30px; }
-        .social-links a { color: #94a3b8; font-size: 1.8rem; margin: 0 15px; transition: color 0.3s; }
-        .social-links a:hover { color: #3b82f6; transform: scale(1.1); display: inline-block; }
+        .social-links a { color: var(--text-muted); font-size: 1.8rem; margin: 0 15px; transition: color 0.3s, transform 0.3s; }
+        .social-links a:hover { color: var(--accent); transform: scale(1.1); display: inline-block; }
     </style>
 </head>
 <body>
@@ -101,27 +109,54 @@
             <a href="index.html" class="active">Home</a>
             <a href="about.html">About</a>
             <a href="projects.html">Experience & Projects</a>
-            <a href="about.html">MyNotes</a>
+            <a href="blog.html">MyNotes</a>
+            <button id="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
         </div>
     </nav>
 
     <div class="container">
-        <img src="Profile.jpg" alt="Emir Yildirim" class="profile-pic">
-        <h1>Muhammed Emir Yildirim</h1>
+        <img src="profile.jpg" alt="Emir Yildirim" class="profile-pic">
+        <h1>Emir Yildirim</h1>
         <h2>Computer Engineer | Cybersecurity Enthusiast | Penetration Tester</h2>
         
         <div>
-            <a href="MuhammedEmirYildirimCV.pdf" download class="btn"><i class="fas fa-download"></i> Download Resume</a>
+            <a href="Emir_Yildirim_CV.pdf" download class="btn"><i class="fas fa-download"></i> Download Resume</a>
         </div>
 
         <div class="social-links">
-            <a href="https://github.com/emiryildirimm" target="_blank"><i class="fab fa-github"></i></a>
-            <a href="https://www.linkedin.com/in/muhammed-emir-y%C4%B1ld%C4%B1r%C4%B1m/" target="_blank"><i class="fab fa-linkedin"></i></a>
-            <a href="https://x.com/eemir_yldrmm" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a href="https://www.instagram.com/emiryildirim.m/" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://github.com/emiryildirimm" target="_blank" title="GitHub"><i class="fab fa-github"></i></a>
+            <a href="https://www.linkedin.com/in/muhammed-emir-yıldırım/" target="_blank" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
             <a href="https://medium.com/@EmirTheRoot" target="_blank" title="Medium"><i class="fab fa-medium"></i></a>
+            <a href="https://www.instagram.com/emiryildirim.m/" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="https://x.com/eemir_yldrmm" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a>
         </div>
     </div>
+
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const icon = toggleBtn.querySelector('i');
+        
+        if (document.documentElement.getAttribute('data-theme') === 'light') {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            let currentTheme = document.documentElement.getAttribute('data-theme');
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            if (newTheme === 'light') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+    </script>
 
 </body>
 </html>
