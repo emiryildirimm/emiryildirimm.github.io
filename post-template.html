@@ -1,77 +1,154 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comprehensive Network Scanning with Nmap | Emir Yildirim</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #ffffff; background: linear-gradient(-45deg, #0f172a, #1e293b, #020617, #172554); background-size: 400% 400%; animation: gradientBG 15s ease infinite; line-height: 1.6; min-height: 100vh; }
+        :root {
+            --bg-1: #f8fafc;
+            --bg-2: #e2e8f0;
+            --bg-3: #f1f5f9;
+            --bg-4: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-light: #64748b;
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --border-color: #cbd5e1;
+            --accent: #2563eb;
+            --logo-color: #2563eb;
+            --nav-link-color: #0f172a;
+            --h3-color: #1d4ed8;
+            --code-text: #4f46e5;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-1: #0f172a;
+            --bg-2: #1e293b;
+            --bg-3: #020617;
+            --bg-4: #172554;
+            --text-main: #ffffff;
+            --text-muted: #e2e8f0;
+            --text-light: #94a3b8;
+            --nav-bg: rgba(15, 23, 42, 0.8);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --border-color: #334155;
+            --accent: #3b82f6;
+            --logo-color: #60a5fa;
+            --nav-link-color: #e2e8f0;
+            --h3-color: #93c5fd;
+            --code-text: #a5b4fc;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            color: var(--text-main); 
+            background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4)); 
+            background-size: 400% 400%; 
+            animation: gradientBG 15s ease infinite; 
+            line-height: 1.6; 
+            min-height: 100vh;
+            transition: color 0.4s ease, background 0.4s ease; 
+        }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
-        .navbar { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 100; }
-        .nav-logo { font-size: 1.5rem; font-weight: bold; color: #60a5fa; text-decoration: none; }
-        .nav-links a { color: #e2e8f0; text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
-        .nav-links a:hover, .nav-links a.active { color: #3b82f6; }
+        .navbar { 
+            background: var(--nav-bg); 
+            backdrop-filter: blur(10px); 
+            padding: 15px 30px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--border-color); 
+            position: sticky; 
+            top: 0; 
+            z-index: 100;
+            transition: background 0.4s ease, border-color 0.4s ease; 
+        }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: var(--logo-color); text-decoration: none; transition: color 0.4s ease; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { color: var(--nav-link-color); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
 
+        #theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin-left: 25px;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+        #theme-toggle:hover { color: var(--accent); transform: scale(1.1); }
 
         .article-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
         
-        .back-link { display: inline-block; color: #94a3b8; text-decoration: none; margin-bottom: 30px; transition: color 0.3s; font-weight: 500; }
-        .back-link:hover { color: #60a5fa; }
+        .back-link { display: inline-block; color: var(--text-light); text-decoration: none; margin-bottom: 30px; transition: color 0.3s; font-weight: 500; }
+        .back-link:hover { color: var(--logo-color); }
         .back-link i { margin-right: 8px; }
 
         .article-wrapper {
-            background: rgba(30, 41, 59, 0.7);
+            background: var(--card-bg);
             padding: 40px;
             border-radius: 15px;
-            border-top: 4px solid #3b82f6;
+            border-top: 4px solid var(--accent);
             backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 30px var(--shadow);
+            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
         }
 
-        .article-header { border-bottom: 1px solid #334155; padding-bottom: 20px; margin-bottom: 30px; }
-        .article-title { margin: 0 0 15px 0; font-size: 2.5rem; color: #fff; line-height: 1.2; }
-        .article-meta { color: #94a3b8; font-size: 0.95rem; display: flex; gap: 20px; align-items: center; }
-        .article-meta i { color: #3b82f6; }
-        .tag { background: #1e293b; padding: 4px 12px; border-radius: 15px; font-size: 0.85rem; color: #94a3b8; border: 1px solid #334155; }
+        .article-header { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 30px; transition: border-color 0.4s ease; }
+        .article-title { margin: 0 0 15px 0; font-size: 2.5rem; color: var(--text-main); line-height: 1.2; transition: color 0.4s ease; }
+        .article-meta { color: var(--text-light); font-size: 0.95rem; display: flex; gap: 20px; align-items: center; transition: color 0.4s ease; }
+        .article-meta i { color: var(--accent); transition: color 0.4s ease; }
+        .tag { background: var(--bg-2); padding: 4px 12px; border-radius: 15px; font-size: 0.85rem; color: var(--text-light); border: 1px solid var(--border-color); transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
 
-
-        .article-content { font-size: 1.1rem; color: #e2e8f0; line-height: 1.8; }
-        .article-content h2 { color: #60a5fa; margin-top: 40px; font-size: 1.8rem; }
-        .article-content h3 { color: #93c5fd; margin-top: 30px; font-size: 1.4rem; }
+        .article-content { font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; transition: color 0.4s ease; }
+        .article-content h2 { color: var(--logo-color); margin-top: 40px; font-size: 1.8rem; transition: color 0.4s ease; }
+        .article-content h3 { color: var(--h3-color); margin-top: 30px; font-size: 1.4rem; transition: color 0.4s ease; }
         .article-content p { margin-bottom: 20px; }
-        .article-content a { color: #3b82f6; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.3s; }
-        .article-content a:hover { border-bottom-color: #3b82f6; }
+        .article-content a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.3s, color 0.4s ease; }
+        .article-content a:hover { border-bottom-color: var(--accent); }
         .article-content ul { margin-bottom: 20px; padding-left: 20px; }
         .article-content li { margin-bottom: 10px; }
 
-
         pre {
-            background: #0f172a;
+            background: var(--bg-1);
             padding: 20px;
             border-radius: 8px;
             overflow-x: auto;
-            border: 1px solid #334155;
-            border-left: 4px solid #3b82f6;
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent);
             margin: 25px 0;
+            transition: background 0.4s ease, border-color 0.4s ease;
         }
-        code { font-family: 'Courier New', Courier, monospace; color: #a5b4fc; font-size: 0.95rem; }
+        code { font-family: 'Courier New', Courier, monospace; color: var(--code-text); font-size: 0.95rem; transition: color 0.4s ease; }
         
-
-        p code, li code { background: #1e293b; padding: 2px 6px; border-radius: 4px; color: #93c5fd; font-size: 0.95rem; }
+        p code, li code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; color: var(--h3-color); font-size: 0.95rem; transition: background 0.4s ease, color 0.4s ease; }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <a href="index.html" class="nav-logo">EY.</a>
+        <a href="index.html" class="nav-logo">root@emir:~#</a>
         <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
             <a href="projects.html">Experience & Projects</a>
-            <a href="blog.html" class="active">Blog</a>
+            <a href="blog.html" class="active">MyNotes</a>
+            <button id="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
         </div>
     </nav>
 
@@ -114,6 +191,32 @@ nmap -p- -sV -sC 10.10.10.5</code></pre>
             </div>
         </article>
     </div>
+
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const icon = toggleBtn.querySelector('i');
+        
+        if (document.documentElement.getAttribute('data-theme') === 'light') {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            let currentTheme = document.documentElement.getAttribute('data-theme');
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            if (newTheme === 'light') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+    </script>
 
 </body>
 </html>
