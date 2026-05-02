@@ -167,27 +167,6 @@
 
             <div class="article-content">
                 <p>During my cybersecurity internship, one of the most fundamental tools I use daily is <code>nmap</code> (Network Mapper). It is essential for network discovery and security auditing.</p>
-
-                <h2>Basic Scanning Techniques</h2>
-                <p>Before diving into complex scripts, it is crucial to understand the basics. A simple ping scan allows us to see which hosts are alive on a subnet without sending any packets to ports.</p>
-                
-                <pre><code># Perform a ping scan on a /24 subnet
-nmap -sn 192.168.1.0/24</code></pre>
-
-                <h2>Advanced Service Detection</h2>
-                <p>Once active hosts are identified, the next step is determining what services and versions are running on open ports. This helps in mapping vulnerabilities to specific service versions.</p>
-
-                <ul>
-                    <li><strong>-sV:</strong> Probes open ports to determine service/version info.</li>
-                    <li><strong>-sC:</strong> Runs default Nmap scripts for advanced discovery.</li>
-                    <li><strong>-p-:</strong> Scans all 65535 ports instead of the default 1000.</li>
-                </ul>
-
-                <pre><code># Scan all ports with version detection and default scripts
-nmap -p- -sV -sC 10.10.10.5</code></pre>
-
-                <h2>Conclusion</h2>
-                <p>Understanding the exact flags to use in different scenarios saves time and reduces noise on the network. In the next post, I will cover how to use Burp Suite to analyze the web applications hosted on the ports we just discovered.</p>
             </div>
         </article>
     </div>
