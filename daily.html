@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily | Emir Yildirim</title>
+    <title>Daily Routine | Emir Yildirim</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Sayfa yüklenmeden önce temayı ayarlayan script -->
     <script>
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
     </script>
 
     <style>
+        /* Ana CSS Değişkenleri */
         :root {
             --bg-1: #f8fafc;
             --bg-2: #e2e8f0;
@@ -43,6 +45,7 @@
             --shadow: rgba(59, 130, 246, 0.4);
         }
 
+        /* Temel Stiller */
         body { 
             margin: 0; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
@@ -56,6 +59,7 @@
         }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
         
+        /* Navbar */
         .navbar { 
             background: var(--nav-bg); 
             backdrop-filter: blur(10px); 
@@ -85,6 +89,7 @@
         }
         #theme-toggle:hover { color: var(--accent); transform: scale(1.1); }
 
+        /* Konteyner ve Kart Stilleri */
         .container { max-width: 900px; margin: 50px auto; padding: 0 20px; }
         .page-title { text-align: center; margin-bottom: 40px; font-size: 2.5rem; color: var(--accent); transition: color 0.4s ease;}
         
@@ -99,6 +104,7 @@
         }
         .section-card h3 { margin-top: 0; color: var(--text-main); font-size: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; transition: color 0.4s ease, border-color 0.4s ease;}
 
+        /* --- ÖZEL: SUDOKU TASARIMI --- */
         .sudoku-container {
             display: flex;
             flex-direction: column;
@@ -108,7 +114,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 2px;
-            background: var(--text-main); /* Kalın çizgilerin rengi */
+            background: var(--text-main);
             border: 3px solid var(--text-main);
             max-width: 350px;
             width: 100%;
@@ -119,7 +125,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 1px;
-            background: var(--border-color); /* İnce çizgilerin rengi */
+            background: var(--border-color);
             transition: background 0.4s ease;
         }
         .sudoku-cell {
@@ -133,7 +139,7 @@
             color: var(--text-main);
             transition: background 0.4s ease, color 0.4s ease;
         }
-        .sudoku-cell.solved { color: var(--accent); } /* Senin çözdüğün/eklediğin rakamlar mavi olsun */
+        .sudoku-cell.solved { color: var(--accent); }
         
         .sudoku-timer {
             font-size: 1.2rem;
@@ -146,18 +152,19 @@
         }
         .sudoku-timer i { color: var(--accent); }
 
+        /* --- ÖZEL: KELİME KARTLARI --- */
         .vocab-grid {
             display: flex;
             flex-wrap: wrap;
             gap: 15px;
             margin-top: 20px;
-            justify-content: center; /* Kelimeleri ortalar */
+            justify-content: center;
         }
         .vocab-item {
             background: var(--card-bg);
             border: 2px solid var(--border-color);
             padding: 12px 35px;
-            border-radius: 50px; /* Oval (pill) görünümü verir */
+            border-radius: 50px;
             transition: transform 0.3s ease, border-color 0.4s ease, box-shadow 0.3s ease;
             box-shadow: 0 4px 6px var(--shadow);
             text-align: center;
@@ -172,10 +179,11 @@
             font-weight: bold; 
             color: var(--accent); 
             display: block; 
-            text-transform: capitalize; /* Tüm kelimelerin baş harfini otomatik büyütür */
+            text-transform: capitalize;
             letter-spacing: 1px;
         }
 
+        /* --- ÖZEL: GÜNÜN SÖZÜ --- */
         .quote-box {
             position: relative;
             padding: 20px 20px 20px 50px;
@@ -208,6 +216,61 @@
             color: var(--accent);
             text-align: right;
         }
+
+        /* --- ÖZEL: GÜNCEL KİTAP --- */
+        .book-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .book-cover {
+            width: 80px;
+            height: 120px;
+            background: var(--bg-2);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+            transition: background 0.4s ease, border-color 0.4s ease;
+            box-shadow: 2px 4px 8px var(--shadow);
+        }
+        .book-details { flex: 1; }
+        .book-title {
+            margin: 0;
+            color: var(--accent);
+            font-size: 1.2rem;
+            transition: color 0.4s ease;
+        }
+        .book-author {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            transition: color 0.4s ease;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-2);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+            transition: background 0.4s ease;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            transition: background 0.4s ease, width 0.4s ease;
+        }
+        .progress-text {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 5px;
+            text-align: right;
+            transition: color 0.4s ease;
+        }
     </style>
 </head>
 <body>
@@ -219,14 +282,35 @@
             <a href="about.html">About</a>
             <a href="projects.html">Experience & Projects</a>
             <a href="blog.html">MyNotes</a>
-            <a href="daily.html" class="active">Daily Space</a>
+            <a href="daily.html" class="active">Personal Space</a>
             <button id="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
         </div>
     </nav>
 
     <div class="container">
-        <h1 class="page-title">Daily Things :)</h1>
+        <h1 class="page-title">Special Things :)</h1>
 
+        <!-- GÜNCEL KİTAP KISMI -->
+        <div class="section-card">
+            <h3><i class="fas fa-book-open"></i> Currently Reading</h3>
+            <div class="book-container">
+                <div class="book-cover">
+                    <i class="fas fa-book" style="font-size: 2rem; color: var(--text-muted);"></i>
+                </div>
+                <div class="book-details">
+                    <h4 class="book-title">Atomic Habits</h4>
+                    <span class="book-author">James Clear</span>
+                    
+                    <div class="progress-bar-bg">
+                        <!-- Genişliği (width) okuma durumuna göre değiştirebilirsin -->
+                        <div class="progress-bar-fill" style="width: 5%;"></div>
+                    </div>
+                    <span class="progress-text">5% Completed</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SUDOKU KISMI -->
         <div class="section-card">
             <h3><i class="fas fa-border-all"></i> Daily Sudoku Challenge</h3>
             <div class="sudoku-container">
@@ -286,6 +370,7 @@
             </div>
         </div>
 
+        <!-- İNGİLİZCE KELİMELER KISMI -->
         <div class="section-card">
             <h3><i class="fas fa-language"></i> Today's Vocabulary</h3>
             <div class="vocab-grid">
@@ -301,6 +386,16 @@
             </div>
         </div>
 
+        <!-- GÜNLÜK ŞARKI KISMI -->
+        <div class="section-card">
+            <h3><i class="fas fa-music"></i> Currently Favorite Song</h3>
+            <p style="color: var(--text-muted); margin-top: -5px; margin-bottom: 15px; font-size: 0.9rem;">
+                Click to play.
+            </p>
+            <iframe style="border-radius:12px" src="https://open.spotify.com/intl-tr/embed/track/2YpeDb67231RjR0MgVLzsG?si=9dce1ac20b934104" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        </div>
+
+        <!-- GÜNÜN SÖZÜ KISMI -->
         <div class="section-card">
             <h3><i class="fas fa-quote-left"></i> Quote of the Day</h3>
             <blockquote class="quote-box">
@@ -311,6 +406,7 @@
 
     </div>
 
+    <!-- JS Kodu -->
     <script>
         const toggleBtn = document.getElementById('theme-toggle');
         const icon = toggleBtn.querySelector('i');
