@@ -137,6 +137,70 @@
         code { font-family: 'Courier New', Courier, monospace; color: var(--code-text); font-size: 0.95rem; transition: color 0.4s ease; }
         
         p code, li code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; color: var(--h3-color); font-size: 0.95rem; transition: background 0.4s ease, color 0.4s ease; }
+
+        /* ========================================= */
+        /* MOBİL UYUM (RESPONSIVE DESIGN) KODLARI    */
+        /* ========================================= */
+        @media (max-width: 768px) {
+            /* 1. Navbar'ı alt alta ve ortalı diz */
+            .navbar {
+                flex-direction: column;
+                padding: 15px 10px;
+                gap: 15px;
+            }
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 12px;
+            }
+            .nav-links a {
+                margin-left: 0;
+                font-size: 0.95rem;
+            }
+            #theme-toggle {
+                margin-left: 5px;
+            }
+
+            /* 2. Dış boşlukları daralt */
+            .container {
+                margin: 20px auto;
+                padding: 0 15px;
+            }
+
+            /* 3. Dev başlıkları küçült */
+            h1, .page-title {
+                font-size: 2rem;
+                margin-bottom: 20px;
+            }
+            h2 {
+                font-size: 1rem;
+            }
+
+            /* 4. Kartların iç boşluklarını (padding) daralt */
+            .section-card {
+                padding: 20px 15px;
+                margin-bottom: 20px;
+            }
+
+            /* 5. Kelime grid yapısını dar ekranlara uyarla */
+            .vocab-item {
+                padding: 10px 20px;
+                width: 100%; /* Telefondaysa kelimeler alt alta tam genişlikte dizelecek */
+                box-sizing: border-box;
+            }
+            
+            /* 6. Profil resmi boyutunu küçült (index.html için) */
+            .profile-pic {
+                width: 140px;
+                height: 140px;
+            }
+            
+            /* 7. Sudoku hücre fontlarını küçült */
+            .sudoku-cell {
+                font-size: 1rem;
+            }
+        }
+
     </style>
 </head>
 <body>
