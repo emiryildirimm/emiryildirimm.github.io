@@ -6,7 +6,7 @@
     <title>Comprehensive Network Scanning with Nmap | Emir Yildirim</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <script>
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -20,15 +20,13 @@
             --bg-4: #cbd5e1;
             --text-main: #0f172a;
             --text-muted: #475569;
-            --text-light: #64748b;
             --nav-bg: rgba(255, 255, 255, 0.8);
             --card-bg: rgba(255, 255, 255, 0.7);
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
             --border-color: #cbd5e1;
             --accent: #2563eb;
-            --logo-color: #2563eb;
-            --nav-link-color: #0f172a;
-            --h3-color: #1d4ed8;
-            --code-text: #4f46e5;
+            --accent-hover: #1d4ed8;
             --shadow: rgba(0, 0, 0, 0.1);
         }
 
@@ -38,48 +36,46 @@
             --bg-3: #020617;
             --bg-4: #172554;
             --text-main: #ffffff;
-            --text-muted: #e2e8f0;
-            --text-light: #94a3b8;
+            --text-muted: #94a3b8;
             --nav-bg: rgba(15, 23, 42, 0.8);
             --card-bg: rgba(30, 41, 59, 0.7);
+            --code-bg: #020617;
+            --code-text: #e2e8f0;
             --border-color: #334155;
             --accent: #3b82f6;
-            --logo-color: #60a5fa;
-            --nav-link-color: #e2e8f0;
-            --h3-color: #93c5fd;
-            --code-text: #a5b4fc;
-            --shadow: rgba(0, 0, 0, 0.3);
+            --accent-hover: #60a5fa;
+            --shadow: rgba(59, 130, 246, 0.4);
         }
 
-        body { 
-            margin: 0; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            color: var(--text-main); 
-            background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4)); 
-            background-size: 400% 400%; 
-            animation: gradientBG 15s ease infinite; 
-            line-height: 1.6; 
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            line-height: 1.7;
             min-height: 100vh;
-            transition: color 0.4s ease, background 0.4s ease; 
+            transition: color 0.4s ease, background 0.4s ease;
         }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        
-        .navbar { 
-            background: var(--nav-bg); 
-            backdrop-filter: blur(10px); 
-            padding: 15px 30px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border-bottom: 1px solid var(--border-color); 
-            position: sticky; 
-            top: 0; 
+
+        .navbar {
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
             z-index: 100;
-            transition: background 0.4s ease, border-color 0.4s ease; 
+            transition: background 0.4s ease, border-color 0.4s ease;
         }
-        .nav-logo { font-size: 1.5rem; font-weight: bold; color: var(--logo-color); text-decoration: none; transition: color 0.4s ease; }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); text-decoration: none; }
         .nav-links { display: flex; align-items: center; }
-        .nav-links a { color: var(--nav-link-color); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
         .nav-links a:hover, .nav-links a.active { color: var(--accent); }
 
         #theme-toggle {
@@ -93,114 +89,274 @@
         }
         #theme-toggle:hover { color: var(--accent); transform: scale(1.1); }
 
-        .article-container { max-width: 800px; margin: 40px auto; padding: 0 20px; }
-        
-        .back-link { display: inline-block; color: var(--text-light); text-decoration: none; margin-bottom: 30px; transition: color 0.3s; font-weight: 500; }
-        .back-link:hover { color: var(--logo-color); }
-        .back-link i { margin-right: 8px; }
+        .article-container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
 
-        .article-wrapper {
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--accent); }
+
+        .article-header {
+            text-align: center;
+            padding: 30px 20px 40px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+        .article-header h1 {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin: 0 0 20px 0;
+            line-height: 1.3;
+        }
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .article-meta span { display: flex; align-items: center; gap: 6px; }
+        .article-meta i { color: var(--accent); }
+
+        .article-content {
             background: var(--card-bg);
+            backdrop-filter: blur(10px);
             padding: 40px;
             border-radius: 15px;
-            border-top: 4px solid var(--accent);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 10px 30px var(--shadow);
-            transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
-        }
-
-        .article-header { border-bottom: 1px solid var(--border-color); padding-bottom: 20px; margin-bottom: 30px; transition: border-color 0.4s ease; }
-        .article-title { margin: 0 0 15px 0; font-size: 2.5rem; color: var(--text-main); line-height: 1.2; transition: color 0.4s ease; }
-        .article-meta { color: var(--text-light); font-size: 0.95rem; display: flex; gap: 20px; align-items: center; transition: color 0.4s ease; }
-        .article-meta i { color: var(--accent); transition: color 0.4s ease; }
-        .tag { background: var(--bg-2); padding: 4px 12px; border-radius: 15px; font-size: 0.85rem; color: var(--text-light); border: 1px solid var(--border-color); transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease; }
-
-        .article-content { font-size: 1.1rem; color: var(--text-muted); line-height: 1.8; transition: color 0.4s ease; }
-        .article-content h2 { color: var(--logo-color); margin-top: 40px; font-size: 1.8rem; transition: color 0.4s ease; }
-        .article-content h3 { color: var(--h3-color); margin-top: 30px; font-size: 1.4rem; transition: color 0.4s ease; }
-        .article-content p { margin-bottom: 20px; }
-        .article-content a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.3s, color 0.4s ease; }
-        .article-content a:hover { border-bottom-color: var(--accent); }
-        .article-content ul { margin-bottom: 20px; padding-left: 20px; }
-        .article-content li { margin-bottom: 10px; }
-
-        pre {
-            background: var(--bg-1);
-            padding: 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            border: 1px solid var(--border-color);
             border-left: 4px solid var(--accent);
-            margin: 25px 0;
             transition: background 0.4s ease, border-color 0.4s ease;
         }
-        code { font-family: 'Courier New', Courier, monospace; color: var(--code-text); font-size: 0.95rem; transition: color 0.4s ease; }
-        
-        p code, li code { background: var(--bg-2); padding: 2px 6px; border-radius: 4px; color: var(--h3-color); font-size: 0.95rem; transition: background 0.4s ease, color 0.4s ease; }
 
-        /* ========================================= */
-        /* MOBİL UYUM (RESPONSIVE DESIGN) KODLARI    */
-        /* ========================================= */
-        @media (max-width: 768px) {
-            /* 1. Navbar'ı alt alta ve ortalı diz */
-            .navbar {
-                flex-direction: column;
-                padding: 15px 10px;
-                gap: 15px;
-            }
-            .nav-links {
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 12px;
-            }
-            .nav-links a {
-                margin-left: 0;
-                font-size: 0.95rem;
-            }
-            #theme-toggle {
-                margin-left: 5px;
-            }
+        .article-content h2 {
+            color: var(--accent);
+            font-size: 1.7rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .article-content h2:first-child { margin-top: 0; }
+        .article-content h2 i { font-size: 1.3rem; }
 
-            /* 2. Dış boşlukları daralt */
-            .container {
-                margin: 20px auto;
-                padding: 0 15px;
-            }
-
-            /* 3. Dev başlıkları küçült */
-            h1, .page-title {
-                font-size: 2rem;
-                margin-bottom: 20px;
-            }
-            h2 {
-                font-size: 1rem;
-            }
-
-            /* 4. Kartların iç boşluklarını (padding) daralt */
-            .section-card {
-                padding: 20px 15px;
-                margin-bottom: 20px;
-            }
-
-            /* 5. Kelime grid yapısını dar ekranlara uyarla */
-            .vocab-item {
-                padding: 10px 20px;
-                width: 100%; /* Telefondaysa kelimeler alt alta tam genişlikte dizelecek */
-                box-sizing: border-box;
-            }
-            
-            /* 6. Profil resmi boyutunu küçült (index.html için) */
-            .profile-pic {
-                width: 140px;
-                height: 140px;
-            }
-            
-            /* 7. Sudoku hücre fontlarını küçült */
-            .sudoku-cell {
-                font-size: 1rem;
-            }
+        .article-content h3 {
+            color: var(--text-main);
+            font-size: 1.25rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
         }
 
+        .article-content p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .article-content strong { color: var(--text-main); }
+
+        .lead-paragraph {
+            font-size: 1.1rem;
+            font-style: italic;
+            padding: 20px;
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 3px solid var(--accent);
+            border-radius: 8px;
+            margin-bottom: 30px !important;
+        }
+
+        /* Kod blokları */
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 18px 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+        pre .cmd { color: #60a5fa; font-weight: bold; }
+        pre .flag { color: #fbbf24; }
+        pre .comment { color: #64748b; font-style: italic; }
+        pre .arg { color: #34d399; }
+
+        code {
+            background: var(--bg-2);
+            color: var(--accent);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Bayrak tablosu */
+        .flag-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-2);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .flag-table th {
+            background: var(--accent);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .flag-table td {
+            padding: 12px 15px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .flag-table td:first-child {
+            font-family: 'Consolas', monospace;
+            color: var(--accent);
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .flag-table tr:hover td { background: rgba(59, 130, 246, 0.05); }
+
+        /* Bilgi kutusu */
+        .info-box {
+            display: flex;
+            gap: 15px;
+            padding: 18px 20px;
+            background: rgba(59, 130, 246, 0.08);
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 3px solid var(--accent);
+        }
+        .info-box i {
+            color: var(--accent);
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .info-box p { margin: 0; }
+
+        .warning-box {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.08);
+        }
+        .warning-box i { color: #f59e0b; }
+
+        /* TCP el sıkışma diyagramı */
+        .handshake-diagram {
+            background: var(--bg-2);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px 20px;
+            margin: 25px 0;
+            overflow-x: auto;
+        }
+        .handshake-step {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 18px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.95rem;
+        }
+        .handshake-step:last-child { margin-bottom: 0; }
+        .hs-node {
+            background: var(--card-bg);
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: 1px solid var(--accent);
+            color: var(--text-main);
+            font-weight: bold;
+            text-align: center;
+        }
+        .hs-arrow {
+            color: var(--accent);
+            font-family: 'Consolas', monospace;
+            font-weight: bold;
+            font-size: 0.85rem;
+            text-align: center;
+            white-space: nowrap;
+            padding: 5px 12px;
+            background: rgba(59, 130, 246, 0.12);
+            border-radius: 20px;
+        }
+        .hs-final {
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid #22c55e;
+            border-radius: 8px;
+            color: #22c55e;
+            font-weight: bold;
+            font-family: 'Consolas', monospace;
+            letter-spacing: 1px;
+        }
+
+        /* Komut listesi grid */
+        .cmd-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .cmd-card {
+            background: var(--bg-2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .cmd-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+        .cmd-card .cmd-name {
+            font-family: 'Consolas', monospace;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        .cmd-card .cmd-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Mobil */
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; padding: 15px 10px; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+            .nav-links a { margin-left: 0; font-size: 0.95rem; }
+            #theme-toggle { margin-left: 5px; }
+            .article-container { margin: 20px auto; padding: 0 15px; }
+            .article-header h1 { font-size: 1.7rem; }
+            .article-content { padding: 25px 20px; }
+            .article-content h2 { font-size: 1.4rem; }
+            .handshake-step {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                text-align: center;
+            }
+            .hs-arrow { transform: rotate(90deg); width: fit-content; margin: 0 auto; }
+        }
     </style>
 </head>
 <body>
@@ -218,28 +374,225 @@
     </nav>
 
     <div class="article-container">
-        <a href="blog.html" class="back-link"><i class="fas fa-arrow-left"></i> Back to Articles</a>
-        
-        <article class="article-wrapper">
-            <header class="article-header">
-                <h1 class="article-title">Comprehensive Network Scanning with Nmap</h1>
-                <div class="article-meta">
-                    <span><i class="far fa-calendar-alt"></i> March 12, 2026</span>
-                    <span><i class="far fa-clock"></i> 5 min read</span>
-                    <span class="tag">Network Security</span>
-                </div>
-            </header>
+        <a href="blog.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to all notes
+        </a>
 
-            <div class="article-content">
-                <p>During my cybersecurity internship, one of the most fundamental tools I use daily is <code>nmap</code> (Network Mapper). It is essential for network discovery and security auditing.</p>
+        <header class="article-header">
+            <h1>Comprehensive Network Scanning with Nmap</h1>
+            <div class="article-meta">
+                <span><i class="far fa-calendar-alt"></i> March 12, 2026</span>
+                <span><i class="fas fa-tag"></i> Network Security</span>
+                <span><i class="fas fa-clock"></i> ~7 min read</span>
             </div>
+        </header>
+
+        <article class="article-content">
+
+            <p class="lead-paragraph">
+                During my cybersecurity internship, one of the first tools I worked with extensively was <strong>Nmap</strong>. These are my organized notes covering its role as a footprinting tool, the flags I used most often, and the underlying TCP/UDP concepts that make scanning possible.
+            </p>
+
+            <h2><i class="fas fa-crosshairs"></i> What is Nmap?</h2>
+            <p>
+                Nmap is a <strong>footprinting tool</strong> — meaning its primary job is to gather information about a target before any deeper assessment begins. It maps out hosts, open ports, running services, and even the operating system behind them.
+            </p>
+            <div class="info-box warning-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p><strong>Important:</strong> Nmap is inherently <em>noisy</em>. Default scans send a lot of traffic and are easily detected by intrusion detection systems. In real engagements, we need to think carefully about how to perform these scans <strong>quietly</strong>.</p>
+            </div>
+
+            <h2><i class="fas fa-terminal"></i> Verbosity & Output</h2>
+            <p>The first thing I got comfortable with was controlling how much feedback Nmap gives me, and how to save that output for later analysis.</p>
+
+            <div class="cmd-grid">
+                <div class="cmd-card">
+                    <div class="cmd-name">-v</div>
+                    <div class="cmd-desc">Verbose output — shows what Nmap is doing as it runs.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">-vv</div>
+                    <div class="cmd-desc">Even more verbose — more details for debugging or learning.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">-oG</div>
+                    <div class="cmd-desc">Saves the scan output in grepable format for later parsing.</div>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-radar"></i> Scan Types I Used Most</h2>
+            <p>Nmap supports many different scan techniques. These are the ones that showed up the most during my internship:</p>
+
+            <table class="flag-table">
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>What it does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>-A</td>
+                        <td><strong>Aggressive scan</strong> — combines OS detection, version detection, script scanning, and traceroute in a single command.</td>
+                    </tr>
+                    <tr>
+                        <td>-sV</td>
+                        <td>Scans the <strong>versions</strong> of open ports — useful for matching services against known vulnerabilities.</td>
+                    </tr>
+                    <tr>
+                        <td>-sT</td>
+                        <td>TCP connect scan — completes a <strong>legitimate connection</strong> (not stealthy like a SYN scan).</td>
+                    </tr>
+                    <tr>
+                        <td>-sU</td>
+                        <td><strong>UDP scan</strong> — for finding services that don't use TCP.</td>
+                    </tr>
+                    <tr>
+                        <td>-F</td>
+                        <td><strong>Fast scan</strong> — only scans the most important 100 ports instead of the default 1000.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2><i class="fas fa-network-wired"></i> Port Scanning Details</h2>
+            <p>By default, Nmap scans the <strong>first 1000 most common ports</strong>. That's usually enough for an initial sweep, but several flags help me narrow or expand that:</p>
+
+            <pre><span class="comment"># Scan a specific port</span>
+<span class="cmd">nmap</span> <span class="flag">-p</span> <span class="arg">80</span> <span class="arg">target.com</span>
+
+<span class="comment"># Show only the open ports in the output</span>
+<span class="cmd">nmap</span> <span class="flag">--open</span> <span class="arg">target.com</span>
+
+<span class="comment"># Scan multiple targets at the same time (IP or domain)</span>
+<span class="cmd">nmap</span> <span class="arg">192.168.1.1</span> <span class="arg">example.com</span></pre>
+
+            <div class="info-box">
+                <i class="fas fa-lightbulb"></i>
+                <p>Nmap is flexible with what you point it at — you can mix IP addresses and domain names in the same command, which is handy when scanning a small environment.</p>
+            </div>
+
+            <h2><i class="fas fa-stopwatch"></i> Timing Templates</h2>
+            <p>Speed matters, both for efficiency and for staying under the radar. Nmap exposes six timing templates via the <code>-T</code> flag:</p>
+            <pre><span class="cmd">nmap</span> <span class="flag">-T0</span> <span class="arg">target.com</span>   <span class="comment"># paranoid — slowest, very stealthy</span>
+<span class="cmd">nmap</span> <span class="flag">-T5</span> <span class="arg">target.com</span>   <span class="comment"># insane — fastest, very noisy</span></pre>
+            <p>The rule is simple: <strong>higher numbers are faster</strong> but make the scan louder. Lower numbers are slower and harder to detect.</p>
+
+            <h2><i class="fas fa-toolbox"></i> Companion Tools</h2>
+            <p>Nmap rarely works alone. A few other tools I picked up alongside it:</p>
+
+            <h3>whois</h3>
+            <p>Used to look up information about a target IP address through a web service or command line.</p>
+            <pre><span class="cmd">whois</span> <span class="arg">&lt;target ip address&gt;</span></pre>
+
+            <h3>nslookup</h3>
+            <p>Resolves IPs to domains and vice versa. The output can be redirected to a file for later review:</p>
+            <pre><span class="cmd">nslookup</span> <span class="arg">&lt;ip_address or domain&gt;</span> &gt;&gt; <span class="arg">results.txt</span></pre>
+
+            <h3>netmask</h3>
+            <p>Shows the maximum range of IPs covered by a subnet — useful when scoping out which addresses fall inside a given network.</p>
+
+            <h3>Zenmap</h3>
+            <p>The <strong>graphical version of Nmap</strong>, developed by the same team. Same engine underneath, but with a GUI that's helpful when learning or when presenting results to non-technical stakeholders.</p>
+
+            <h3>WebMap</h3>
+            <p>A very useful companion tool for <strong>scanning a target and generating reports</strong> from the results — turns raw Nmap output into something presentable.</p>
+
+            <h2><i class="fas fa-exchange-alt"></i> TCP vs UDP</h2>
+            <p>To really understand what Nmap is doing, I had to revisit the difference between the two main transport protocols:</p>
+            <div class="cmd-grid">
+                <div class="cmd-card">
+                    <div class="cmd-name">TCP</div>
+                    <div class="cmd-desc"><strong>Connection-based</strong> communication. A session is established before any data is exchanged.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">UDP</div>
+                    <div class="cmd-desc"><strong>Connectionless</strong> communication. Packets are simply sent, with no session setup.</div>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-flag"></i> TCP Flags</h2>
+            <p>TCP packets carry control flags in their header that tell the receiver how to handle the segment. These are the six core flags:</p>
+
+            <table class="flag-table">
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Meaning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>URG</td>
+                        <td><strong>Urgent</strong> — the packet should be processed immediately.</td>
+                    </tr>
+                    <tr>
+                        <td>PSH</td>
+                        <td><strong>Push</strong> — transmits the data immediately, without buffering.</td>
+                    </tr>
+                    <tr>
+                        <td>FIN</td>
+                        <td><strong>Finish</strong> — signals there will be no further transmission.</td>
+                    </tr>
+                    <tr>
+                        <td>ACK</td>
+                        <td><strong>Acknowledgement</strong> — confirms receipt of a packet.</td>
+                    </tr>
+                    <tr>
+                        <td>SYN</td>
+                        <td><strong>Synchronization</strong> — initializes a connection between host and target.</td>
+                    </tr>
+                    <tr>
+                        <td>RST</td>
+                        <td><strong>Reset</strong> — resets the connection.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2><i class="fas fa-handshake"></i> The TCP 3-Way Handshake</h2>
+            <p>Every TCP connection begins with the same three steps. Understanding this sequence is essential for understanding what scan types like <code>-sT</code> actually do.</p>
+
+            <div class="handshake-diagram">
+                <div class="handshake-step">
+                    <div class="hs-node">Client</div>
+                    <div class="hs-arrow">── SYN ──▶</div>
+                    <div class="hs-node">Server <span style="font-weight:normal;color:var(--text-muted);font-size:0.85rem;">(SYN-Sent)</span></div>
+                </div>
+                <div class="handshake-step">
+                    <div class="hs-node">Client <span style="font-weight:normal;color:var(--text-muted);font-size:0.85rem;">(SYN Received)</span></div>
+                    <div class="hs-arrow">◀ SYN-ACK ──</div>
+                    <div class="hs-node">Server</div>
+                </div>
+                <div class="handshake-step">
+                    <div class="hs-node">Client</div>
+                    <div class="hs-arrow">── ACK ──▶</div>
+                    <div class="hs-node">Server</div>
+                </div>
+                <div class="hs-final">✓ CONNECTION ESTABLISHED</div>
+            </div>
+
+            <p>So the flow is:</p>
+            <ol style="color: var(--text-muted);">
+                <li>The client sends a <strong>SYN</strong> to the server to start the conversation. The server enters a <em>SYN-Sent</em>-like state.</li>
+                <li>The server replies with <strong>SYN-ACK</strong>, and the client moves to a <em>SYN Received</em> state.</li>
+                <li>The client sends a final <strong>ACK</strong>, and both sides are now <strong>ESTABLISHED</strong>.</li>
+            </ol>
+
+            <div class="info-box">
+                <i class="fas fa-graduation-cap"></i>
+                <p><strong>Wrapping up:</strong> These notes cover the foundation I built during my internship — network scanning with Nmap, the supporting toolset around it, and the TCP fundamentals that make it all work. I'll keep expanding this as I move into more advanced topics.</p>
+            </div>
+
         </article>
+
+        <a href="blog.html" class="back-link" style="margin-top: 30px;">
+            <i class="fas fa-arrow-left"></i> Back to all notes
+        </a>
     </div>
 
     <script>
         const toggleBtn = document.getElementById('theme-toggle');
         const icon = toggleBtn.querySelector('i');
-        
+
         if (document.documentElement.getAttribute('data-theme') === 'light') {
             icon.classList.remove('fa-moon');
             icon.classList.add('fa-sun');
@@ -248,10 +601,10 @@
         toggleBtn.addEventListener('click', () => {
             let currentTheme = document.documentElement.getAttribute('data-theme');
             let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
+
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
+
             if (newTheme === 'light') {
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-sun');
