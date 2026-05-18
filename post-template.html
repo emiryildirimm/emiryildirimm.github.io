@@ -309,6 +309,11 @@
             font-family: 'Consolas', monospace;
             letter-spacing: 1px;
         }
+        .hs-final.alt {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
 
         /* Komut listesi grid */
         .cmd-grid {
@@ -339,6 +344,56 @@
             color: var(--text-muted);
             font-size: 0.9rem;
         }
+
+        /* Port durumu kartları */
+        .state-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .state-card {
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-2);
+        }
+        .state-card .state-name {
+            font-family: 'Consolas', monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .state-card.open { border-left: 4px solid #22c55e; }
+        .state-card.open .state-name { color: #22c55e; }
+        .state-card.closed { border-left: 4px solid #ef4444; }
+        .state-card.closed .state-name { color: #ef4444; }
+        .state-card.filtered { border-left: 4px solid #f59e0b; }
+        .state-card.filtered .state-name { color: #f59e0b; }
+        .state-card .state-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* -Pn karşılaştırma kutusu */
+        .compare-box {
+            background: var(--bg-2);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.9;
+            overflow-x: auto;
+        }
+        .compare-box .row { color: var(--text-muted); white-space: nowrap; }
+        .compare-box .label { color: var(--accent); font-weight: bold; display: inline-block; min-width: 130px; }
+        .compare-box .stop { color: #ef4444; font-weight: bold; }
+        .compare-box .go { color: #22c55e; font-weight: bold; }
 
         /* Mobil */
         @media (max-width: 768px) {
@@ -383,14 +438,14 @@
             <div class="article-meta">
                 <span><i class="far fa-calendar-alt"></i> March 12, 2026</span>
                 <span><i class="fas fa-tag"></i> Network Security</span>
-                <span><i class="fas fa-clock"></i> ~7 min read</span>
+                <span><i class="fas fa-clock"></i> ~10 min read</span>
             </div>
         </header>
 
         <article class="article-content">
 
             <p class="lead-paragraph">
-                During my cybersecurity internship, one of the first tools I worked with extensively was <strong>Nmap</strong>. These are my organized notes covering its role as a footprinting tool, the flags I used most often, and the underlying TCP/UDP concepts that make scanning possible.
+                During my cybersecurity internship, one of the first tools I worked with extensively was <strong>Nmap</strong>. These are my organized notes covering its role as a footprinting tool, the flags I used most often, port states, host discovery tricks, and the underlying TCP/UDP concepts that make scanning possible.
             </p>
 
             <h2><i class="fas fa-crosshairs"></i> What is Nmap?</h2>
@@ -436,16 +491,28 @@
                         <td><strong>Aggressive scan</strong> — combines OS detection, version detection, script scanning, and traceroute in a single command.</td>
                     </tr>
                     <tr>
+                        <td>-O</td>
+                        <td><strong>OS detection</strong> — tries to identify the operating system running on the target.</td>
+                    </tr>
+                    <tr>
                         <td>-sV</td>
-                        <td>Scans the <strong>versions</strong> of open ports — useful for matching services against known vulnerabilities.</td>
+                        <td><strong>Version detection</strong> — scans the service versions of open ports, useful for matching them against known vulnerabilities.</td>
                     </tr>
                     <tr>
                         <td>-sT</td>
                         <td>TCP connect scan — completes a <strong>legitimate connection</strong> (not stealthy like a SYN scan).</td>
                     </tr>
                     <tr>
+                        <td>-sS</td>
+                        <td><strong>SYN / stealth scan</strong> — like <code>-sT</code> but doesn't fully establish a connection. Faster and harder for firewalls to detect.</td>
+                    </tr>
+                    <tr>
                         <td>-sU</td>
                         <td><strong>UDP scan</strong> — for finding services that don't use TCP.</td>
+                    </tr>
+                    <tr>
+                        <td>-sn</td>
+                        <td><strong>Ping sweep</strong> — no port scan; lists which devices are online and their MAC addresses. Accepts multiple IPs at once.</td>
                     </tr>
                     <tr>
                         <td>-F</td>
@@ -455,10 +522,15 @@
             </table>
 
             <h2><i class="fas fa-network-wired"></i> Port Scanning Details</h2>
-            <p>By default, Nmap scans the <strong>first 1000 most common ports</strong>. That's usually enough for an initial sweep, but several flags help me narrow or expand that:</p>
+            <p>
+                In total there are <strong>65,535 ports</strong> available on a host, but Nmap doesn't blast through all of them by default. It scans the <strong>first 1000 most common ports</strong>, which is usually enough for an initial sweep. Several flags let me narrow or expand that range:
+            </p>
 
             <pre><span class="comment"># Scan a specific port</span>
 <span class="cmd">nmap</span> <span class="flag">-p</span> <span class="arg">80</span> <span class="arg">target.com</span>
+
+<span class="comment"># Scan ALL 65,535 ports</span>
+<span class="cmd">nmap</span> <span class="flag">-p-</span> <span class="arg">target.com</span>
 
 <span class="comment"># Show only the open ports in the output</span>
 <span class="cmd">nmap</span> <span class="flag">--open</span> <span class="arg">target.com</span>
@@ -469,6 +541,70 @@
             <div class="info-box">
                 <i class="fas fa-lightbulb"></i>
                 <p>Nmap is flexible with what you point it at — you can mix IP addresses and domain names in the same command, which is handy when scanning a small environment.</p>
+            </div>
+
+            <h2><i class="fas fa-traffic-light"></i> Port States</h2>
+            <p>Nmap classifies every port it scans into a state. The three I see most often are:</p>
+
+            <div class="state-grid">
+                <div class="state-card open">
+                    <div class="state-name"><i class="fas fa-door-open"></i> open</div>
+                    <div class="state-desc">A service is actively listening and accepting connections on this port.</div>
+                </div>
+                <div class="state-card closed">
+                    <div class="state-name"><i class="fas fa-door-closed"></i> closed</div>
+                    <div class="state-desc">The port is reachable, but nothing is listening on it.</div>
+                </div>
+                <div class="state-card filtered">
+                    <div class="state-name"><i class="fas fa-shield-alt"></i> filtered</div>
+                    <div class="state-desc">Nmap can't reach a conclusion about whether the port is open or closed — usually because a <strong>firewall</strong> or filter is dropping the probes.</div>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-satellite-dish"></i> Host Discovery & <code>-Pn</code></h2>
+            <p>
+                Before Nmap scans ports, it normally pings the target first to check if it's alive. If the ping is blocked, Nmap drops the target and moves on — even if the host is actually online. The <code>-Pn</code> flag tells Nmap to <strong>skip that ping check entirely</strong> and go straight to port scanning.
+            </p>
+
+            <div class="compare-box">
+                <div class="row"><span class="label">Default Nmap:</span> [Target IP] ──▶ Ping Probe ──▶ No Response? ──▶ <span class="stop">Drop Target (Stop)</span></div>
+                <div class="row"><span class="label">With -Pn:</span> [Target IP] ──▶ Skip Ping ──▶ <span class="go">Force Port Scan (Go Straight to Ports)</span></div>
+            </div>
+
+            <p>Practically, scanning with <code>-Pn</code> against a normal IP or domain is often <strong>faster than the default scan</strong>, since Nmap skips the discovery round-trip entirely. It's also essential against hosts that block ICMP.</p>
+
+            <h2><i class="fas fa-user-secret"></i> SYN Scan vs Connect Scan</h2>
+            <p>
+                Both <code>-sT</code> and <code>-sS</code> probe TCP ports, but they behave very differently on the wire. <code>-sT</code> completes a full three-way handshake; <code>-sS</code> aborts the handshake after the second step.
+            </p>
+
+            <div class="handshake-diagram">
+                <p style="margin-top:0;color:var(--text-main);font-weight:bold;text-align:center;">-sS (SYN / Stealth Scan) on an open port</p>
+                <div class="handshake-step">
+                    <div class="hs-node">Attacker</div>
+                    <div class="hs-arrow">── SYN ──▶</div>
+                    <div class="hs-node">Target</div>
+                </div>
+                <div class="handshake-step">
+                    <div class="hs-node">Attacker</div>
+                    <div class="hs-arrow">◀ SYN-ACK ──</div>
+                    <div class="hs-node">Target</div>
+                </div>
+                <div class="handshake-step">
+                    <div class="hs-node">Attacker</div>
+                    <div class="hs-arrow">── RST ──▶</div>
+                    <div class="hs-node">Target</div>
+                </div>
+                <div class="hs-final alt">✗ CONNECTION ABORTED — NEVER ESTABLISHED</div>
+            </div>
+
+            <p>
+                Because the connection is never fully completed, the target's application layer often doesn't log the attempt the way it would for a full <code>-sT</code> scan. That makes <code>-sS</code> <strong>faster and better for firewall / IDS evasion</strong>.
+            </p>
+
+            <div class="info-box">
+                <i class="fas fa-lightbulb"></i>
+                <p><strong>Key insight:</strong> the handshake difference between <code>-sS</code> and <code>-sT</code> only matters on <em>open</em> ports. On closed ports, both scans just get an RST back from the target, so they look identical.</p>
             </div>
 
             <h2><i class="fas fa-stopwatch"></i> Timing Templates</h2>
@@ -549,7 +685,7 @@
             </table>
 
             <h2><i class="fas fa-handshake"></i> The TCP 3-Way Handshake</h2>
-            <p>Every TCP connection begins with the same three steps. Understanding this sequence is essential for understanding what scan types like <code>-sT</code> actually do.</p>
+            <p>Every TCP connection begins with the same three steps. Understanding this sequence is essential for understanding what scan types like <code>-sT</code> actually do — and what <code>-sS</code> intentionally <em>avoids</em>.</p>
 
             <div class="handshake-diagram">
                 <div class="handshake-step">
@@ -579,7 +715,7 @@
 
             <div class="info-box">
                 <i class="fas fa-graduation-cap"></i>
-                <p><strong>Wrapping up:</strong> These notes cover the foundation I built during my internship — network scanning with Nmap, the supporting toolset around it, and the TCP fundamentals that make it all work. I'll keep expanding this as I move into more advanced topics.</p>
+                <p><strong>Wrapping up:</strong> These notes cover the foundation I built during my internship — network scanning with Nmap, host discovery tricks like <code>-Pn</code>, the difference between stealth and connect scans, port states, the supporting toolset around Nmap, and the TCP fundamentals that make it all work. I'll keep expanding this as I move into more advanced topics.</p>
             </div>
 
         </article>
