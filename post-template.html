@@ -395,6 +395,106 @@
         .compare-box .stop { color: #ef4444; font-weight: bold; }
         .compare-box .go { color: #22c55e; font-weight: bold; }
 
+        /* Çıktı dosyaları tablosu */
+        .output-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-2);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .output-table th {
+            background: var(--accent);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .output-table td {
+            padding: 12px 15px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            vertical-align: top;
+        }
+        .output-table td:first-child {
+            font-family: 'Consolas', monospace;
+            color: var(--accent);
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .output-table td:nth-child(2) {
+            font-family: 'Consolas', monospace;
+            color: #fbbf24;
+            white-space: nowrap;
+        }
+
+        /* Firewall detection kutusu */
+        .firewall-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .firewall-card {
+            padding: 18px;
+            border-radius: 10px;
+            background: var(--bg-2);
+            border: 1px solid var(--border-color);
+        }
+        .firewall-card.has-fw { border-left: 4px solid #ef4444; }
+        .firewall-card.no-fw { border-left: 4px solid #22c55e; }
+        .firewall-card .fw-header {
+            font-weight: bold;
+            font-family: 'Consolas', monospace;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .firewall-card.has-fw .fw-header { color: #ef4444; }
+        .firewall-card.no-fw .fw-header { color: #22c55e; }
+        .firewall-card .fw-desc {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+        }
+
+        @media (max-width: 600px) {
+            .firewall-box { grid-template-columns: 1fr; }
+        }
+
+        /* XMAS / FIN / NULL diyagramı */
+        .scan-flags-diagram {
+            background: var(--bg-2);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.92rem;
+            line-height: 2;
+            overflow-x: auto;
+        }
+        .scan-flags-diagram .scan-label {
+            color: var(--accent);
+            font-weight: bold;
+            display: inline-block;
+            min-width: 75px;
+        }
+        .scan-flags-diagram .flag-on {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.15);
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin: 0 3px;
+        }
+        .scan-flags-diagram .none-tag {
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
         /* Mobil */
         @media (max-width: 768px) {
             .navbar { flex-direction: column; padding: 15px 10px; gap: 15px; }
@@ -438,14 +538,14 @@
             <div class="article-meta">
                 <span><i class="far fa-calendar-alt"></i> March 12, 2026</span>
                 <span><i class="fas fa-tag"></i> Network Security</span>
-                <span><i class="fas fa-clock"></i> ~10 min read</span>
+                <span><i class="fas fa-clock"></i> ~14 min read</span>
             </div>
         </header>
 
         <article class="article-content">
 
             <p class="lead-paragraph">
-                During my cybersecurity internship, one of the first tools I worked with extensively was <strong>Nmap</strong>. These are my organized notes covering its role as a footprinting tool, the flags I used most often, port states, host discovery tricks, and the underlying TCP/UDP concepts that make scanning possible.
+                During my cybersecurity internship, one of the first tools I worked with extensively was <strong>Nmap</strong>. These are my organized notes covering its role as a footprinting tool, the flags I used most often, port states, host discovery tricks, output formats, evasion techniques, and the underlying TCP/UDP concepts that make scanning possible.
             </p>
 
             <h2><i class="fas fa-crosshairs"></i> What is Nmap?</h2>
@@ -470,10 +570,56 @@
                     <div class="cmd-desc">Even more verbose — more details for debugging or learning.</div>
                 </div>
                 <div class="cmd-card">
-                    <div class="cmd-name">-oG</div>
-                    <div class="cmd-desc">Saves the scan output in grepable format for later parsing.</div>
+                    <div class="cmd-name">-vvv</div>
+                    <div class="cmd-desc">Maximum verbosity — packet-level information, useful when something is acting weird.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">--reason</div>
+                    <div class="cmd-desc">Explains <em>why</em> Nmap classified each port as it did (e.g. <code>syn-ack</code>, <code>no-response</code>, <code>reset</code>, TTL info).</div>
                 </div>
             </div>
+
+            <h2><i class="fas fa-save"></i> Output Formats: <code>-oA</code> and Friends</h2>
+            <p>
+                When I needed to save scans for later, <code>-oA</code> became my favorite — it writes <strong>three different output files at once</strong>, each suited to a different use case. I can also pick just one if I don't need all three.
+            </p>
+
+            <table class="output-table">
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Extension</th>
+                        <th>What it gives me</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>-oN</td>
+                        <td>.nmap</td>
+                        <td><strong>Normal / human-readable</strong> — a one-to-one copy of what I see on screen.</td>
+                    </tr>
+                    <tr>
+                        <td>-oG</td>
+                        <td>.gnmap</td>
+                        <td><strong>Grepable output</strong> — one host per line, perfect for parsing with <code>awk</code>, <code>grep</code>, or scripts.</td>
+                    </tr>
+                    <tr>
+                        <td>-oX</td>
+                        <td>.xml</td>
+                        <td><strong>Machine-readable XML</strong> — strictly structured, the most exhaustive format. Great input for reporting tools.</td>
+                    </tr>
+                    <tr>
+                        <td>-oA</td>
+                        <td>all three</td>
+                        <td>Writes <strong>all three formats at once</strong> with the same basename.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <pre><span class="comment"># Save the same scan in all three formats</span>
+<span class="cmd">nmap</span> <span class="flag">-sS</span> <span class="flag">-sV</span> <span class="flag">-oA</span> <span class="arg">scan_results</span> <span class="arg">192.168.1.50</span>
+
+<span class="comment"># Produces:  scan_results.nmap, scan_results.gnmap, scan_results.xml</span></pre>
 
             <h2><i class="fas fa-radar"></i> Scan Types I Used Most</h2>
             <p>Nmap supports many different scan techniques. These are the ones that showed up the most during my internship:</p>
@@ -499,6 +645,10 @@
                         <td><strong>Version detection</strong> — scans the service versions of open ports, useful for matching them against known vulnerabilities.</td>
                     </tr>
                     <tr>
+                        <td>-sC</td>
+                        <td><strong>Default script scan</strong> — runs Nmap's set of safe NSE scripts against open ports to grab banners, weak configs, common info.</td>
+                    </tr>
+                    <tr>
                         <td>-sT</td>
                         <td>TCP connect scan — completes a <strong>legitimate connection</strong> (not stealthy like a SYN scan).</td>
                     </tr>
@@ -520,6 +670,11 @@
                     </tr>
                 </tbody>
             </table>
+
+            <p>A very common combo I ended up running often was:</p>
+
+            <pre><span class="cmd">nmap</span> <span class="flag">-sS</span> <span class="flag">-sC</span> <span class="flag">-sV</span> <span class="flag">-p</span> <span class="arg">22,80,445</span> <span class="arg">192.168.1.50</span>
+<span class="comment"># Stealth SYN scan + default scripts + version detection on specific ports</span></pre>
 
             <h2><i class="fas fa-network-wired"></i> Port Scanning Details</h2>
             <p>
@@ -560,6 +715,24 @@
                     <div class="state-desc">Nmap can't reach a conclusion about whether the port is open or closed — usually because a <strong>firewall</strong> or filter is dropping the probes.</div>
                 </div>
             </div>
+
+            <h2><i class="fas fa-fire-extinguisher"></i> Firewall Detection (ACK Probing)</h2>
+            <p>
+                One of the most useful tricks I picked up: looking at the <strong>distribution of port states</strong> tells me whether a firewall is in the way. Nmap's <strong>ACK probe</strong> (<code>-sA</code>) is designed exactly for this — it sends ACK packets and observes how the target responds.
+            </p>
+
+            <div class="firewall-box">
+                <div class="firewall-card has-fw">
+                    <div class="fw-header"><i class="fas fa-shield-alt"></i> All ports filtered</div>
+                    <div class="fw-desc">There is most likely a <strong>firewall in front of the target</strong> dropping or silently discarding the probes.</div>
+                </div>
+                <div class="firewall-card no-fw">
+                    <div class="fw-header"><i class="fas fa-check-circle"></i> All ports unfiltered</div>
+                    <div class="fw-desc">No stateful firewall is filtering this traffic — the target is reachable directly.</div>
+                </div>
+            </div>
+
+            <p>This is also where <code>--reason</code> shines: pairing it with an ACK scan tells me <em>why</em> Nmap landed on each verdict (no-response vs. RST vs. ICMP unreachable), which usually clarifies what kind of device is sitting in the path.</p>
 
             <h2><i class="fas fa-satellite-dish"></i> Host Discovery & <code>-Pn</code></h2>
             <p>
@@ -607,11 +780,82 @@
                 <p><strong>Key insight:</strong> the handshake difference between <code>-sS</code> and <code>-sT</code> only matters on <em>open</em> ports. On closed ports, both scans just get an RST back from the target, so they look identical.</p>
             </div>
 
+            <h2><i class="fas fa-tree"></i> Advanced Scan Types: XMAS, FIN, NULL</h2>
+            <p>
+                Beyond SYN scans, Nmap has several "weird-flag" scans that abuse how TCP is <em>supposed</em> to behave. By RFC, a closed port should respond with RST to any unexpected packet, while an open port should ignore it. That asymmetry lets us infer port states without ever starting a real handshake.
+            </p>
+
+            <div class="scan-flags-diagram">
+                <div><span class="scan-label">-sX</span> XMAS scan — sets <span class="flag-on">FIN</span><span class="flag-on">PSH</span><span class="flag-on">URG</span> all at once. The packet looks "lit up like a Christmas tree."</div>
+                <div><span class="scan-label">-sF</span> FIN scan — sends a packet with only <span class="flag-on">FIN</span> set.</div>
+                <div><span class="scan-label">-sN</span> NULL scan — sends a packet with <span class="none-tag">no flags set at all</span>.</div>
+            </div>
+
+            <p>The response logic for all three is the same:</p>
+
+            <table class="flag-table">
+                <thead>
+                    <tr>
+                        <th>Response</th>
+                        <th>Port state inferred</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>RST received</td>
+                        <td><strong>closed</strong></td>
+                    </tr>
+                    <tr>
+                        <td>No response</td>
+                        <td><strong>open</strong> or <strong>filtered</strong> (Nmap can't tell which)</td>
+                    </tr>
+                    <tr>
+                        <td>ICMP unreachable</td>
+                        <td><strong>filtered</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box warning-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>These scans skip the three-way handshake entirely, so they can slip past simple stateless firewalls. But many modern Windows systems break RFC and respond with RST to <em>everything</em>, which makes XMAS/FIN/NULL scans much less useful against them. They shine more against older Unix-like targets.</p>
+            </div>
+
             <h2><i class="fas fa-stopwatch"></i> Timing Templates</h2>
             <p>Speed matters, both for efficiency and for staying under the radar. Nmap exposes six timing templates via the <code>-T</code> flag:</p>
             <pre><span class="cmd">nmap</span> <span class="flag">-T0</span> <span class="arg">target.com</span>   <span class="comment"># paranoid — slowest, very stealthy</span>
 <span class="cmd">nmap</span> <span class="flag">-T5</span> <span class="arg">target.com</span>   <span class="comment"># insane — fastest, very noisy</span></pre>
             <p>The rule is simple: <strong>higher numbers are faster</strong> but make the scan louder. Lower numbers are slower and harder to detect.</p>
+
+            <h2><i class="fas fa-user-ninja"></i> Firewall &amp; IDS Evasion Techniques</h2>
+            <p>
+                When the target is hardened — IDS in front, strict firewall, logging everything — a default scan won't go far. Nmap has a few techniques designed specifically to <strong>blind, confuse, or sidestep</strong> defenders.
+            </p>
+
+            <h3><code>-D RND:3</code> — Decoy Scan</h3>
+            <p>
+                Tells Nmap to <strong>spoof 3 completely random, valid IP addresses</strong> and mix their traffic with your real IP. To a network defender looking at the logs, it looks like 4 different machines are scanning them simultaneously — and figuring out <em>which</em> IP is the actual attacker becomes much harder. You can also specify decoys explicitly instead of letting Nmap randomize them.
+            </p>
+            <pre><span class="comment"># 3 random decoys mixed in with the real source IP</span>
+<span class="cmd">nmap</span> <span class="flag">-D</span> <span class="arg">RND:3</span> <span class="arg">target.com</span>
+
+<span class="comment"># Explicit decoys — Nmap will mix these in with the real one</span>
+<span class="cmd">nmap</span> <span class="flag">-D</span> <span class="arg">10.0.0.5,10.0.0.6,ME,10.0.0.7</span> <span class="arg">target.com</span></pre>
+
+            <h3><code>-f</code> — Fragment Packets</h3>
+            <p>
+                An evasion technique that <strong>splits the TCP header across several small IP fragments</strong> (typically 8-byte fragments after the IP header). The logic is to split the attack signature across multiple packets so that older, stateless firewalls or deep packet inspection engines — the kind that don't reassemble fragments before checking rules — never see the full pattern they're trying to match.
+            </p>
+            <pre><span class="cmd">nmap</span> <span class="flag">-f</span> <span class="flag">-sS</span> <span class="arg">target.com</span></pre>
+
+            <h3><code>--send-eth</code> — Send Raw Ethernet Frames</h3>
+            <p>
+                This <strong>bypasses the operating system's standard network layer (Layer 3) processing</strong>. Instead of handing the packet to the OS kernel to route via standard IP, Nmap constructs the raw ethernet frames (Layer 2) itself and injects them directly onto the network interface wire.
+            </p>
+            <p>
+                <strong>Why use it:</strong> it forces Nmap to use its own optimized, low-level packet generation engine, which helps override certain OS-level firewall restrictions or routing quirks that would otherwise interfere with the scan.
+            </p>
+            <pre><span class="cmd">nmap</span> <span class="flag">--send-eth</span> <span class="flag">-sS</span> <span class="arg">target.com</span></pre>
 
             <h2><i class="fas fa-toolbox"></i> Companion Tools</h2>
             <p>Nmap rarely works alone. A few other tools I picked up alongside it:</p>
@@ -715,7 +959,7 @@
 
             <div class="info-box">
                 <i class="fas fa-graduation-cap"></i>
-                <p><strong>Wrapping up:</strong> These notes cover the foundation I built during my internship — network scanning with Nmap, host discovery tricks like <code>-Pn</code>, the difference between stealth and connect scans, port states, the supporting toolset around Nmap, and the TCP fundamentals that make it all work. I'll keep expanding this as I move into more advanced topics.</p>
+                <p><strong>Wrapping up:</strong> These notes cover the foundation I built during my internship — network scanning with Nmap, host discovery tricks like <code>-Pn</code>, the difference between stealth and connect scans, the weird-flag scans (XMAS / FIN / NULL), port states, firewall detection via ACK probing, evasion techniques (decoys, fragmentation, raw ethernet), output formats, the supporting toolset around Nmap, and the TCP fundamentals that make it all work. I'll keep expanding this as I move into more advanced topics.</p>
             </div>
 
         </article>
