@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diving into NSE: The Nmap Scripting Engine | Emir Yildirim</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <style>
+        :root {
+            --bg-1: #f8fafc;
+            --bg-2: #e2e8f0;
+            --bg-3: #f1f5f9;
+            --bg-4: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --nav-bg: rgba(255, 255, 255, 0.8);
+            --card-bg: rgba(255, 255, 255, 0.7);
+            --code-bg: #1e293b;
+            --code-text: #e2e8f0;
+            --border-color: #cbd5e1;
+            --accent: #2563eb;
+            --accent-hover: #1d4ed8;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-1: #0f172a;
+            --bg-2: #1e293b;
+            --bg-3: #020617;
+            --bg-4: #172554;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --nav-bg: rgba(15, 23, 42, 0.8);
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --code-bg: #020617;
+            --code-text: #e2e8f0;
+            --border-color: #334155;
+            --accent: #3b82f6;
+            --accent-hover: #60a5fa;
+            --shadow: rgba(59, 130, 246, 0.4);
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            line-height: 1.7;
+            min-height: 100vh;
+            transition: color 0.4s ease, background 0.4s ease;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .navbar {
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        #theme-toggle {
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.2rem;
+            margin-left: 25px;
+            cursor: pointer;
+            transition: color 0.3s, transform 0.3s;
+        }
+        #theme-toggle:hover { color: var(--accent); transform: scale(1.1); }
+
+        .article-container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            transition: color 0.3s;
+        }
+        .back-link:hover { color: var(--accent); }
+
+        .article-header {
+            text-align: center;
+            padding: 30px 20px 40px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+        .article-header h1 {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin: 0 0 20px 0;
+            line-height: 1.3;
+        }
+        .article-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+        .article-meta span { display: flex; align-items: center; gap: 6px; }
+        .article-meta i { color: var(--accent); }
+
+        .article-content {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 15px;
+            border-left: 4px solid var(--accent);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .article-content h2 {
+            color: var(--accent);
+            font-size: 1.7rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .article-content h2:first-child { margin-top: 0; }
+        .article-content h2 i { font-size: 1.3rem; }
+
+        .article-content h3 {
+            color: var(--text-main);
+            font-size: 1.25rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+
+        .article-content p {
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .article-content strong { color: var(--text-main); }
+
+        .lead-paragraph {
+            font-size: 1.1rem;
+            font-style: italic;
+            padding: 20px;
+            background: rgba(59, 130, 246, 0.08);
+            border-left: 3px solid var(--accent);
+            border-radius: 8px;
+            margin-bottom: 30px !important;
+        }
+
+        /* Code blocks */
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 18px 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+        pre .cmd { color: #60a5fa; font-weight: bold; }
+        pre .flag { color: #fbbf24; }
+        pre .comment { color: #64748b; font-style: italic; }
+        pre .arg { color: #34d399; }
+        pre .str { color: #f472b6; }
+
+        code {
+            background: var(--bg-2);
+            color: var(--accent);
+            padding: 2px 7px;
+            border-radius: 5px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Tables */
+        .flag-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--bg-2);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .flag-table th {
+            background: var(--accent);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .flag-table td {
+            padding: 12px 15px;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            vertical-align: top;
+        }
+        .flag-table td:first-child {
+            font-family: 'Consolas', monospace;
+            color: var(--accent);
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        .flag-table tr:hover td { background: rgba(59, 130, 246, 0.05); }
+
+        /* Info boxes */
+        .info-box {
+            display: flex;
+            gap: 15px;
+            padding: 18px 20px;
+            background: rgba(59, 130, 246, 0.08);
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 3px solid var(--accent);
+        }
+        .info-box i {
+            color: var(--accent);
+            font-size: 1.4rem;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .info-box p { margin: 0; }
+
+        .warning-box {
+            border-left-color: #f59e0b;
+            background: rgba(245, 158, 11, 0.08);
+        }
+        .warning-box i { color: #f59e0b; }
+
+        .danger-box {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.08);
+        }
+        .danger-box i { color: #ef4444; }
+
+        /* Command grids */
+        .cmd-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+            margin: 20px 0;
+        }
+        .cmd-card {
+            background: var(--bg-2);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .cmd-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+        }
+        .cmd-card .cmd-name {
+            font-family: 'Consolas', monospace;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+        .cmd-card .cmd-desc {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Script phase flow diagram */
+        .phase-flow {
+            background: var(--bg-2);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px 20px;
+            margin: 25px 0;
+        }
+        .phase-step {
+            display: grid;
+            grid-template-columns: 130px auto 1fr;
+            gap: 15px;
+            align-items: center;
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: var(--card-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            font-family: 'Consolas', monospace;
+            font-size: 0.92rem;
+        }
+        .phase-step:last-child { margin-bottom: 0; }
+        .phase-step .phase-name {
+            color: var(--accent);
+            font-weight: bold;
+        }
+        .phase-step .phase-arrow {
+            color: var(--text-muted);
+        }
+        .phase-step .phase-desc {
+            color: var(--text-muted);
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        /* Boolean expression box */
+        .bool-box {
+            background: var(--bg-2);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            line-height: 1.9;
+            overflow-x: auto;
+        }
+        .bool-box .row { color: var(--text-muted); }
+        .bool-box .row .label { color: var(--accent); font-weight: bold; }
+        .bool-box .row code {
+            background: rgba(59, 130, 246, 0.1);
+            color: #fbbf24;
+            border-color: transparent;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; padding: 15px 10px; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+            .nav-links a { margin-left: 0; font-size: 0.95rem; }
+            #theme-toggle { margin-left: 5px; }
+            .article-container { margin: 20px auto; padding: 0 15px; }
+            .article-header h1 { font-size: 1.7rem; }
+            .article-content { padding: 25px 20px; }
+            .article-content h2 { font-size: 1.4rem; }
+            .phase-step {
+                grid-template-columns: 1fr;
+                text-align: left;
+            }
+            .phase-step .phase-arrow { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">root@emir:~#</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html">Experience & Projects</a>
+            <a href="blog.html" class="active">MyNotes</a>
+            <a href="daily.html">Personal Space</a>
+            <button id="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+        </div>
+    </nav>
+
+    <div class="article-container">
+        <a href="blog.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to all notes
+        </a>
+
+        <header class="article-header">
+            <h1>Diving into NSE: The Nmap Scripting Engine</h1>
+            <div class="article-meta">
+                <span><i class="far fa-calendar-alt"></i> May 20, 2026</span>
+                <span><i class="fas fa-tag"></i> Network Security</span>
+                <span><i class="fas fa-clock"></i> ~12 min read</span>
+            </div>
+        </header>
+
+        <article class="article-content">
+
+            <p class="lead-paragraph">
+                After getting comfortable with Nmap's core scanning capabilities, the next layer I wanted to peel back was the <strong>Nmap Scripting Engine (NSE)</strong> — the piece that turns Nmap from "just a port scanner" into something far more powerful. These notes summarize what NSE is, what it can do, the script categories and execution phases I learned about, and how to actually invoke and combine scripts on the command line.
+            </p>
+
+            <h2><i class="fas fa-cogs"></i> What is NSE?</h2>
+            <p>
+                <strong>NSE</strong> stands for <strong>Nmap Scripting Engine</strong>. It's a feature built into Nmap that allows users to write simple scripts to <strong>automate a wide variety of networking tasks</strong>. The scripts are written in Lua and are executed in parallel with the rest of an Nmap scan, so the speed of the underlying scanner is preserved while the engine adds depth.
+            </p>
+            <p>
+                Practically, NSE turns Nmap from a "what ports are open?" tool into a "what's actually running on those ports, and what's wrong with it?" tool. That's why almost every real-world workflow I came across uses NSE in some form.
+            </p>
+
+            <h2><i class="fas fa-bolt"></i> Why I Use NSE</h2>
+            <p>NSE shows up in five main use cases during reconnaissance and assessment:</p>
+
+            <div class="cmd-grid">
+                <div class="cmd-card">
+                    <div class="cmd-name">Network Discovery</div>
+                    <div class="cmd-desc">Querying registries for target IP ownership, performing ident lookups on open ports, subdomain enumeration (e.g. <code>dns-brute</code>).</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">Advanced Version Detection</div>
+                    <div class="cmd-desc">Goes deeper than default <code>-sV</code> matching by probing services in protocol-specific ways. Note: without <code>-sV</code>, version-related NSE scripts can't fully kick in.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">Vulnerability Detection</div>
+                    <div class="cmd-desc">NSE is powerful enough to handle even demanding vulnerability checks — known CVE detection, misconfigurations, weak ciphers.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">Backdoor Detection</div>
+                    <div class="cmd-desc">Complex worms and backdoors that regex-based version detection misses can be reliably identified through NSE's deeper protocol logic.</div>
+                </div>
+                <div class="cmd-card">
+                    <div class="cmd-name">Vulnerability Exploitation</div>
+                    <div class="cmd-desc">NSE can even be used to <em>exploit</em> vulnerabilities — not just find them. Use this category with caution and only with permission.</div>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-play-circle"></i> Activating NSE</h2>
+            <p>
+                NSE is activated with the <code>-sC</code> option (which runs the default script set), or with <code>--script</code> if I want to specify a custom set of scripts. Script scanning is also included as part of the <code>-A</code> aggressive scan option, which is why <code>-A</code> feels so noisy: it's running OS detection, version detection, AND default NSE scripts all at once.
+            </p>
+
+            <pre><span class="comment"># Run the default script set</span>
+<span class="cmd">nmap</span> <span class="flag">-sC</span> <span class="arg">192.168.1.50</span>
+
+<span class="comment"># Same thing, made explicit</span>
+<span class="cmd">nmap</span> <span class="flag">--script</span> <span class="arg">default</span> <span class="arg">192.168.1.50</span>
+
+<span class="comment"># Run a specific script</span>
+<span class="cmd">nmap</span> <span class="flag">--script</span> <span class="arg">smb-os-discovery</span> <span class="arg">192.168.1.50</span></pre>
+
+            <p>
+                I can customize how some scripts behave by passing arguments to them via the <code>--script-args</code> and <code>--script-args-file</code> options. The <code>--script-help</code> flag shows a description of what each selected script does — I use it constantly before running anything unfamiliar.
+            </p>
+
+            <pre><span class="comment"># Read the script's documentation first</span>
+<span class="cmd">nmap</span> <span class="flag">--script-help</span> <span class="arg">dns-brute</span>
+
+<span class="comment"># Pass arguments to a script</span>
+<span class="cmd">nmap</span> <span class="flag">--script</span> <span class="arg">dns-brute</span> <span class="flag">--script-args</span> <span class="arg">dns-brute.threads=20</span> <span class="arg">example.com</span></pre>
+
+            <div class="info-box danger-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p><strong>Critical safety note:</strong> Scripts are <strong>not run in a sandbox</strong> and could accidentally or maliciously damage the system or invade your privacy. <strong>Never run scripts from third parties</strong> unless you trust the authors or have carefully audited the scripts yourself.</p>
+            </div>
+
+            <h2><i class="fas fa-keyboard"></i> Command-Line Arguments</h2>
+            <p>The flags I keep coming back to when working with NSE:</p>
+
+            <table class="flag-table">
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>What it does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>-sC</td>
+                        <td>Performs a script scan using the <strong>default set of scripts</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td>--script &lt;filename&gt;</td>
+                        <td>Runs a script scan using a comma-separated list of <strong>filenames, script categories, or directories</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td>--script-args &lt;args&gt;</td>
+                        <td>Provides arguments to the scripts (e.g. <code>script.argname=value</code>).</td>
+                    </tr>
+                    <tr>
+                        <td>--script-args-file</td>
+                        <td>Same as <code>--script-args</code>, except the arguments are read from a file rather than the command line.</td>
+                    </tr>
+                    <tr>
+                        <td>--script-help &lt;name&gt;|&lt;category&gt;</td>
+                        <td>Shows the description and usage info for the named script or category.</td>
+                    </tr>
+                    <tr>
+                        <td>--script-trace</td>
+                        <td>Prints all incoming and outgoing communication performed by the scripts. Great for learning what a script actually does on the wire.</td>
+                    </tr>
+                    <tr>
+                        <td>--script-updatedb</td>
+                        <td>Updates the script database (<code>scripts/script.db</code>) used by Nmap to determine the available default scripts and categories.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2><i class="fas fa-tags"></i> Script Categories</h2>
+            <p>
+                Every NSE script belongs to one or more categories. The categories serve two purposes: they let me select groups of scripts at once (instead of typing dozens of names), and they communicate the <strong>risk profile</strong> of running a script.
+            </p>
+
+            <table class="flag-table">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>auth</td>
+                        <td>Scripts that deal with <strong>authentication credentials</strong> (or bypassing them) on the target system. Examples: <code>ftp-anon</code>, <code>http-auth</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>broadcast</td>
+                        <td>Scripts that typically <strong>discover hosts not listed on the command line</strong> by broadcasting on the local network. Use the <code>newtargets</code> script argument to allow these to automatically add discovered hosts to Nmap's scanning queue.</td>
+                    </tr>
+                    <tr>
+                        <td>brute</td>
+                        <td>Scripts that use <strong>brute force attacks</strong> to guess authentication credentials of a remote server. Nmap ships with brute-force scripts for dozens of protocols, including <code>http-brute</code>, <code>oracle-brute</code>, <code>snmp-brute</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>default</td>
+                        <td>The <strong>default set</strong>, run when using <code>-sC</code> or <code>-A</code> instead of listing scripts with <code>--script</code>. Examples: <code>identd-owners</code> (determines the username running remote services using identd), <code>http-auth</code> (obtains the authentication scheme and realm of sites requiring auth), and <code>ftp-anon</code> (tests whether an FTP server allows anonymous access).</td>
+                    </tr>
+                    <tr>
+                        <td>discovery</td>
+                        <td>Scripts that <strong>actively discover more about the network</strong> by querying public registries, SNMP-enabled devices, directory services, and so on. Examples: <code>html-title</code> (obtains the title of the root path of web sites), <code>smb-enum-shares</code> (enumerates Windows shares), <code>snmp-sysdescr</code> (extracts system details via SNMP).</td>
+                    </tr>
+                    <tr>
+                        <td>dos</td>
+                        <td>Scripts that test for <strong>denial-of-service conditions</strong> — meaning they can actually take the target offline if it's vulnerable. Use only with explicit authorization.</td>
+                    </tr>
+                    <tr>
+                        <td>malware</td>
+                        <td>Scripts that test whether the target platform is <strong>infected by malware or backdoors</strong>.</td>
+                    </tr>
+                    <tr>
+                        <td>vuln</td>
+                        <td>Scripts that <strong>check for specific known vulnerabilities</strong> and generally only report results if a vulnerable condition is found.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="info-box">
+                <i class="fas fa-lightbulb"></i>
+                <p>A single script can belong to <strong>multiple categories</strong>. For example, <code>smb-vuln-ms17-010</code> is tagged <code>vuln</code>, <code>intrusive</code>, and <code>dos</code> all at once — because checking for that vulnerability can actually crash the target. Always read the script's full category list with <code>--script-help</code> before running it.</p>
+            </div>
+
+            <h2><i class="fas fa-stream"></i> Script Types: The Four Execution Phases</h2>
+            <p>
+                NSE scripts don't all run at the same point in a scan. Each script declares <em>when</em> it should fire, and Nmap has four execution phases that map to four script types:
+            </p>
+
+            <div class="phase-flow">
+                <div class="phase-step">
+                    <div class="phase-name">Prerule</div>
+                    <div class="phase-arrow">──▶</div>
+                    <div class="phase-desc">Runs <strong>before any of Nmap's scan phases</strong>. Nmap has not collected any information about its targets yet. Useful for tasks that don't depend on specific targets — like broadcasting DHCP or DNS-SD queries to discover hosts. Some prerule scripts can even <strong>generate new targets</strong> (only if you specify the <code>newtargets</code> NSE argument). For example, <code>dns-zone-transfer</code> can obtain a list of IPs in a domain and then automatically add them to Nmap's scan target list.</div>
+                </div>
+                <div class="phase-step">
+                    <div class="phase-name">Host scripts</div>
+                    <div class="phase-arrow">──▶</div>
+                    <div class="phase-desc">Run <strong>during Nmap's normal scanning process</strong>, after Nmap has performed host discovery, port scanning, version detection, and OS detection against the target. These have full context about the host.</div>
+                </div>
+                <div class="phase-step">
+                    <div class="phase-name">Service scripts</div>
+                    <div class="phase-arrow">──▶</div>
+                    <div class="phase-desc">Run against <strong>specific services listening on a target host</strong>. For example, Nmap includes more than 15 HTTP service scripts that run against web servers on whichever ports are serving HTTP.</div>
+                </div>
+                <div class="phase-step">
+                    <div class="phase-name">Postrule</div>
+                    <div class="phase-arrow">──▶</div>
+                    <div class="phase-desc">Runs <strong>after Nmap has scanned all of its targets</strong>. Useful for formatting and presenting Nmap output. For example, <code>ssh-hostkey</code> is best known for its service-script side that connects to SSH servers and discovers their public keys, but it also has a postrule component for printing the collected key set at the end.</div>
+                </div>
+            </div>
+
+            <h2><i class="fas fa-filter"></i> Selecting Scripts</h2>
+            <p>
+                The <code>--script</code> flag accepts more than just a single script name — I can pass categories, wildcards, comma-separated lists, and even boolean expressions. This is what makes NSE selection so flexible.
+            </p>
+
+            <div class="bool-box">
+                <div class="row"><span class="label"># Categories →</span> <code>nmap --script default,safe</code></div>
+                <div class="row">Loads all scripts in the <strong>default</strong> and <strong>safe</strong> categories.</div>
+                <br>
+                <div class="row"><span class="label"># Single script →</span> <code>nmap --script smb-os-discovery</code></div>
+                <div class="row">Loads only the <code>smb-os-discovery</code> script. The <code>.nse</code> extension is optional.</div>
+                <br>
+                <div class="row"><span class="label"># Wildcard →</span> <code>nmap --script "http-*"</code></div>
+                <div class="row">Loads all scripts whose name starts with <code>http-</code>.</div>
+                <br>
+                <div class="row"><span class="label"># Boolean OR →</span> <code>nmap --script "default or safe"</code></div>
+                <div class="row">Loads all scripts that are in the default category, the safe category, or both.</div>
+                <br>
+                <div class="row"><span class="label"># Complex →</span> <code>nmap --script "(default or safe or intrusive) and not http-*"</code></div>
+                <div class="row">Loads scripts in <strong>default, safe, or intrusive</strong> categories, <em>except</em> any whose name starts with <code>http-</code>.</div>
+            </div>
+
+            <p>I can also run two (or more) specific scripts together by listing them, comma-separated:</p>
+
+            <pre><span class="cmd">nmap</span> <span class="flag">-p</span> <span class="arg">22</span> <span class="flag">--script</span> <span class="arg">ssh-auth-methods,ssh-brute</span> <span class="arg">192.168.0.12</span>
+<span class="comment"># Enumerates SSH auth methods first, then brute-forces credentials on port 22</span></pre>
+
+            <div class="info-box warning-box">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>The script-selector quotes matter: shells will try to expand wildcards like <code>http-*</code> against your local filesystem unless they're inside quotes. Always wrap selectors that contain <code>*</code>, parentheses, or boolean operators in double quotes.</p>
+            </div>
+
+            <h2><i class="fas fa-graduation-cap"></i> Wrapping Up</h2>
+            <p>
+                These notes cover the foundation I built around NSE: what the engine is, the five core use cases (network discovery, advanced version detection, vulnerability detection, backdoor detection, and exploitation), how to activate scripts with <code>-sC</code> and <code>--script</code>, the eight script categories I worked with, the four execution phases (prerule, host, service, postrule), and the boolean selector syntax that makes script selection so expressive.
+            </p>
+            <p>
+                The next step for me is moving past <em>using</em> existing scripts into actually <strong>reading and writing</strong> them — opening up <code>/usr/share/nmap/scripts/</code>, picking simple scripts like <code>http-title.nse</code> apart line by line, and eventually authoring my own. I'll write that up in a follow-up post.
+            </p>
+
+        </article>
+
+        <a href="blog.html" class="back-link" style="margin-top: 30px;">
+            <i class="fas fa-arrow-left"></i> Back to all notes
+        </a>
+    </div>
+
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const icon = toggleBtn.querySelector('i');
+
+        if (document.documentElement.getAttribute('data-theme') === 'light') {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            let currentTheme = document.documentElement.getAttribute('data-theme');
+            let newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+
+            if (newTheme === 'light') {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+    </script>
+
+</body>
+</html>
