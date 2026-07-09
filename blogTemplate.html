@@ -1,12 +1,17 @@
+Bu harika ve bilgilendirici metni, ilettiğin modern ve şık blog şablonuna tam uyumlu olacak şekilde kodladım. CSS yapısını, animasyonları, SVG illüstrasyonlarını ve kart tasarımlarını yazının içeriğine (SonarQube, SAST, kod güvenlik açıkları) uygun olarak güncelledim.
+
+Aşağıdaki HTML kodunu doğrudan sitende yayınlayabilirsin:
+
+```html
 <!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Sibertim | Web Uygulamalarında En Yaygın Güvenlik Açıkları</title>
-  <meta name="description" content="Web uygulamalarındaki güvenlik açıklarını ve kurumsal riskleri Sibertim uzmanlığıyla keşfedin. Sızma testleri ile sistemlerinizi saldırılara karşı koruyun." />
-  <meta name="keywords" content="web uygulama güvenlik açıkları, Sibertim, Siber güvenlik, Sızma testi, Pentest, Zafiyet analizi, XSS zafiyeti, Ağ güvenliği" />
+  <title>Sibertim | SonarQube ile Kaynak Kod Analizi Nedir?</title>
+  <meta name="description" content="SonarQube ile Kaynak Kod Analizi (SAST) nedir? Yazılım geliştirme sürecinde güvenlik açıkları nasıl tespit edilir ve kurumsal riskler nasıl önlenir?" />
+  <meta name="keywords" content="SonarQube, kaynak kod analizi, SAST, yazılım güvenliği, siber güvenlik, Sibertim, SQL injection, XSS, pentest, statik analiz" />
   <meta name="author" content="Sibertim" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -74,9 +79,10 @@
     /* ── ARTICLE ── */
     article h2 { font-size: 1.5rem; font-weight: 700; color: var(--navy); margin: 56px 0 18px; padding-bottom: 12px; border-bottom: 2px solid var(--border); position: relative; }
     article h2::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 52px; height: 2px; background: var(--blue); border-radius: 2px; }
+    article h2:first-child { margin-top: 0; }
     article p { color: #374151; font-size: .97rem; margin-bottom: 18px; }
     article strong { color: var(--navy); font-weight: 600; }
-    article ul { list-style: none; margin: 14px 0 24px; display: flex; flex-direction: column; gap: 10px; }
+    article ul, article ol { margin: 14px 0 24px; display: flex; flex-direction: column; gap: 10px; padding-left: 0; list-style: none; }
     article ul li { display: flex; align-items: flex-start; gap: 12px; font-size: .95rem; color: #374151; background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; }
     article ul li::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--blue); flex-shrink: 0; margin-top: 8px; }
 
@@ -117,7 +123,7 @@
     .callout-body strong { display: block; font-size: .9rem; font-weight: 700; margin-bottom: 4px; }
     .callout-body p { font-size: .9rem; color: #374151; margin: 0; }
 
-    /* ── IMPACT SECTION (senaryo yerine) ── */
+    /* ── IMPACT SECTION ── */
     .impact-wrap {
       background: var(--white); border: 1px solid var(--border); border-radius: 20px;
       padding: 40px; margin: 40px 0; overflow: hidden; position: relative;
@@ -200,11 +206,11 @@
   <div class="hero-inner">
     <div class="hero-text">
       <div class="hero-badge">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-        Web Uygulama Güvenliği
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        SAST & SonarQube
       </div>
-      <h1>Web Uygulamalarında En Sık Görülen <em>Güvenlik Açıkları</em></h1>
-      <p class="hero-sub">Sistem sorunsuz çalışıyor görünse de arka planda fark edilmeden gerçekleşen tehditler olabilir. Riskleri tanımak, önlem almanın ilk adımıdır.</p>
+      <h1>SonarQube ile Kaynak Kod Analizi: <em>Yazılım Güvenliği</em> Nasıl Sağlanır?</h1>
+      <p class="hero-sub">Güvenlik ihlallerinin çoğu, aslında çok daha önce yazılmış birkaç satır kodla başlar. Saldırgan sisteme girdiğinde açık yeni oluşmaz; o açık haftalar, bazen aylarca önce geliştiricinin klavyesinden çıkmıştır.</p>
     </div>
     <div class="hero-art">
       <svg viewBox="0 0 480 360" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px;">
@@ -214,27 +220,18 @@
               fill="rgba(10,35,74,.7)" stroke="rgba(59,130,246,.5)" stroke-width="1.5"/>
         <path d="M240 64 L308 96 L308 168 Q308 218 240 250 Q172 218 172 168 L172 96 Z"
               fill="rgba(26,86,219,.15)" stroke="rgba(99,179,237,.4)" stroke-width="1"/>
-        <rect x="222" y="158" width="36" height="28" rx="6" fill="rgba(26,86,219,.4)" stroke="#67e8f9" stroke-width="1.5"/>
-        <path d="M229 158 Q229 142 240 142 Q251 142 251 158" fill="none" stroke="#67e8f9" stroke-width="1.5" stroke-linecap="round"/>
-        <circle cx="240" cy="172" r="4" fill="#67e8f9"/>
-        <line x1="240" y1="176" x2="240" y2="181" stroke="#67e8f9" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="80" y1="90" x2="160" y2="110" stroke="rgba(59,130,246,.25)" stroke-width="1" stroke-dasharray="5 4"/>
-        <line x1="60" y1="168" x2="160" y2="168" stroke="rgba(59,130,246,.25)" stroke-width="1" stroke-dasharray="5 4"/>
-        <line x1="80" y1="248" x2="160" y2="230" stroke="rgba(239,68,68,.2)" stroke-width="1" stroke-dasharray="5 4"/>
-        <g transform="translate(52,76)"><rect x="-22" y="-16" width="44" height="28" rx="8" fill="rgba(26,86,219,.3)" stroke="rgba(59,130,246,.5)" stroke-width="1"/><text x="0" y="3" text-anchor="middle" fill="#93c5fd" font-size="10" font-family="monospace" font-weight="bold">DB</text></g>
-        <g transform="translate(40,168)"><rect x="-22" y="-14" width="44" height="28" rx="8" fill="rgba(26,86,219,.3)" stroke="rgba(59,130,246,.5)" stroke-width="1"/><text x="0" y="4" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace" font-weight="bold">API</text></g>
-        <g transform="translate(58,248)"><rect x="-24" y="-14" width="48" height="28" rx="8" fill="rgba(239,68,68,.2)" stroke="rgba(239,68,68,.45)" stroke-width="1"/><text x="0" y="4" text-anchor="middle" fill="#fca5a5" font-size="9" font-family="monospace" font-weight="bold">SQL?</text></g>
-        <line x1="320" y1="110" x2="400" y2="90" stroke="rgba(59,130,246,.25)" stroke-width="1" stroke-dasharray="5 4"/>
-        <line x1="320" y1="168" x2="440" y2="168" stroke="rgba(16,185,129,.2)" stroke-width="1" stroke-dasharray="5 4"/>
-        <line x1="320" y1="230" x2="400" y2="248" stroke="rgba(245,158,11,.2)" stroke-width="1" stroke-dasharray="5 4"/>
-        <g transform="translate(428,76)"><rect x="-24" y="-14" width="48" height="28" rx="8" fill="rgba(26,86,219,.3)" stroke="rgba(59,130,246,.5)" stroke-width="1"/><text x="0" y="4" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace" font-weight="bold">WEB</text></g>
-        <g transform="translate(460,168)"><rect x="-22" y="-14" width="44" height="28" rx="8" fill="rgba(16,185,129,.2)" stroke="rgba(16,185,129,.4)" stroke-width="1"/><text x="0" y="4" text-anchor="middle" fill="#6ee7b7" font-size="9" font-family="monospace" font-weight="bold">SSL</text></g>
-        <g transform="translate(418,248)"><rect x="-24" y="-14" width="48" height="28" rx="8" fill="rgba(245,158,11,.2)" stroke="rgba(245,158,11,.4)" stroke-width="1"/><text x="0" y="4" text-anchor="middle" fill="#fde68a" font-size="9" font-family="monospace" font-weight="bold">XSS?</text></g>
-        <circle cx="120" cy="100" r="3" fill="#3b82f6" opacity=".7"/>
-        <circle cx="100" cy="168" r="3" fill="#3b82f6" opacity=".7"/>
-        <circle cx="370" cy="100" r="3" fill="#3b82f6" opacity=".7"/>
-        <circle cx="390" cy="168" r="3" fill="#10b981" opacity=".7"/>
-        <text x="240" y="310" text-anchor="middle" fill="rgba(147,197,253,.5)" font-size="11" font-family="Inter, sans-serif" letter-spacing="2">WEB APPLICATION SECURITY</text>
+        <rect x="210" y="145" width="60" height="40" rx="4" fill="rgba(26,86,219,.4)" stroke="#67e8f9" stroke-width="1.5"/>
+        <line x1="220" y1="155" x2="260" y2="155" stroke="#67e8f9" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="220" y1="165" x2="250" y2="165" stroke="#67e8f9" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="220" y1="175" x2="265" y2="175" stroke="#67e8f9" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="270" cy="175" r="8" fill="rgba(239,68,68,.3)" stroke="#ef4444" stroke-width="1.5"/>
+        <line x1="80" y1="168" x2="160" y2="168" stroke="rgba(59,130,246,.25)" stroke-width="1" stroke-dasharray="5 4"/>
+        <line x1="320" y1="168" x2="400" y2="168" stroke="rgba(16,185,129,.2)" stroke-width="1" stroke-dasharray="5 4"/>
+        <g transform="translate(40,168)"><rect x="-26" y="-14" width="52" height="28" rx="8" fill="rgba(26,86,219,.3)" stroke="rgba(59,130,246,.5)" stroke-width="1"/><text x="0" y="4" text-anchor="middle" fill="#93c5fd" font-size="9" font-family="monospace" font-weight="bold">SOURCE</text></g>
+        <g transform="translate(430,168)"><rect x="-26" y="-14" width="52" height="28" rx="8" fill="rgba(16,185,129,.2)" stroke="rgba(16,185,129,.4)" stroke-width="1"/><text x="0" y="4" text-anchor="middle" fill="#6ee7b7" font-size="9" font-family="monospace" font-weight="bold">SECURE</text></g>
+        <circle cx="120" cy="168" r="3" fill="#3b82f6" opacity=".7"/>
+        <circle cx="360" cy="168" r="3" fill="#10b981" opacity=".7"/>
+        <text x="240" y="310" text-anchor="middle" fill="rgba(147,197,253,.5)" font-size="11" font-family="Inter, sans-serif" letter-spacing="2">STATIC APPLICATION SECURITY TESTING</text>
       </svg>
     </div>
   </div>
@@ -243,24 +240,19 @@
 <div class="layout">
 <article>
 
-  <h2 id="giris">Görünmeyen Tehlike</h2>
-  <p>Bir web sitesi ya da uygulama işlevsel göründüğünde, güvende olduğunu varsaymak doğal gelir. Sayfalar açılıyor, işlemler tamamlanıyor, sistem çalışıyor. Peki arka planda neler oluyor?</p>
-  <p>Siber saldırıların büyük çoğunluğu, görünürde hiçbir şey olmuyormuş gibi gerçekleşir. Kullanıcı verilerine erişilir, müşteri bilgileri kopyalanır ya da sisteme gizlice yerleşilir. Bunu fark etmek bazen haftalar, hatta aylar alır.</p>
+  <h2 id="giris">Açık, Saldırıdan Önce Zaten Oradaydı</h2>
+  <p>Güvenlik ihlallerinin çoğu, aslında çok daha önce yazılmış birkaç satır kodla başlar. Saldırgan sisteme girdiğinde açık yeni oluşmaz; o açık haftalar, bazen aylarca önce geliştiricinin klavyesinden çıkmış ve fark edilmeden canlı ortama taşınmıştır.</p>
+  <p>Bunun farkında olan kurumlar güvenliği son test aşamasına değil, yazılımın üretildiği ana taşımaya başladı. Bu yaklaşımın en somut araçlarından biri SonarQube ile kaynak kod analizi: Kod çalışmadan önce, sistem ayağa kalkmadan önce olası güvenlik sorunlarını ortaya koymak.</p>
 
-  <div class="callout warn">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-    <div class="callout-body"><strong>Bunu biliyor muydunuz?</strong><p>Veri ihlallerinin yüzde kırktan fazlası, web uygulamalarındaki güvenlik açıkları aracılığıyla gerçekleşmektedir. Çoğu kurum bunu ancak hasarın gerçekleşmesinden sonra öğrenir.</p></div>
-  </div>
+  <h2 id="nedir">Kaynak Kod Analizi Ne Demektir?</h2>
+  <p>Kaynak kod analizi, yazılımın çalıştırılmadan — yani test ya da üretim ortamına alınmadan önce — doğrudan kod üzerinde güvenlik ve kalite incelemesi yapılmasıdır. Siber güvenlik terminolojisinde bu yönteme SAST denir: <strong>Statik Uygulama Güvenlik Testi</strong>. Statik ifadesi, sistemin ayakta olmasına gerek olmadığını anlatır; çalışma zamanında ne olduğuyla değil, kodun yazılış biçimiyle ilgilenir.</p>
+  <p>Yazılım geliştirilirken yapılan her seçim — verinin nasıl işleneceği, erişim kontrolünün nereye konacağı, hangi kütüphanenin kullanılacağı — ilerleyen süreçte güvenlik açığına dönüşebilir. Kaynak kod analizi bu seçimleri dışarıdan değil, kodun içinden inceleyerek riskli noktaları işaretler.</p>
 
-  <h2 id="neden">Neden Bu Kadar Hedef Alınıyor?</h2>
-  <p>Web uygulamaları; müşteri bilgilerini, ödeme verilerini, kurumsal belgeleri ve kullanıcı hesaplarını barındıran yapılardır. Üstelik bu uygulamalar 7/24 internete açıktır. Ofis saatleri bittikten sonra da, hafta sonları da, tatillerde de erişilebilir durumdadır.</p>
-  <p>Çoğu web uygulaması bir kez kurulur ve yıllarca güvenlik değerlendirmesi yapılmadan kullanılır. Bu süre zarfında başlangıçta var olan ya da sonradan oluşan açıklar fark edilmez ve kullanılabilir hale gelir.</p>
-
-  <h2 id="aciklar">En Sık Karşılaşılan Güvenlik Açıkları</h2>
-  <p>Aşağıdaki açıklar, gerçek güvenlik testlerinde tekrar tekrar karşılaşılan ve kurumları doğrudan etkileyen sorunlardır. Her birini anlamanız için teknik geçmişe ihtiyaç yoktur.</p>
+  <h2 id="kategoriler">En Sık Karşılaşılan Güvenlik Sorunları</h2>
+  <p>Bu yöntemle kaynak kodunda tespit edilen ve en sık karşılaşılan güvenlik sorunları belirli kategoriler altında toplanır:</p>
 
   <div class="vuln-card">
-    <div class="vuln-art">
+    <div class="vuln-art red-bg">
       <svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg" width="180" height="160">
         <ellipse cx="80" cy="42" rx="44" ry="12" fill="#dbeafe" stroke="#93c5fd" stroke-width="1.5"/>
         <rect x="36" y="42" width="88" height="54" fill="#eff6ff" stroke="#93c5fd" stroke-width="1.5"/>
@@ -278,121 +270,17 @@
       </svg>
     </div>
     <div class="vuln-body">
-      <span class="vuln-num red">Açık 01</span>
-      <h3>Giriş Noktaları Yeterince Korunmuyor</h3>
-      <p>Web uygulamalarının kullanıcıdan veri aldığı her yer, potansiyel bir risk noktasıdır. Arama kutuları, yorum alanları, kayıt formları, sipariş ekranları... Saldırganlar bu alanlara normal veri yerine özel komutlar girerek sistemin beklenmedik davranmasını sağlayabilir.</p>
-      <p>Yetkisiz kişiler müşteri listelerine, sipariş geçmişine ya da yönetim paneline erişebilir hale gelir. Bu saldırı türü <strong>SQL Injection</strong> olarak bilinir ve on yılı aşkın süredir bilinen bir risk olmasına rağmen bugün hâlâ en yaygın açıklar arasında yer alır.</p>
+      <span class="vuln-num red">SQL Injection</span>
+      <h3>Veritabanı Sorgularının Manipüle Edilmesi</h3>
+      <p>Kullanıcıdan gelen verinin herhangi bir filtreleme uygulanmadan veritabanı sorgusuna dahil edilmesidir. Saldırgan bu durumu fark ettiğinde, sisteme ait tüm kayıtlara erişmek ya da verileri değiştirmek için bu yolu kullanabilir.</p>
     </div>
   </div>
 
   <div class="vuln-card alt">
     <div class="vuln-body">
-      <span class="vuln-num orange">Açık 02</span>
-      <h3>Başka Bir Kullanıcının Verisine Erişmek Mümkün Olabiliyor</h3>
-      <p>Bir e-ticaret platformunu düşünün. Siparişinizi görüntülediğiniz sayfanın adresinde bir numara yer alıyor. Peki o numarayı değiştirdiğinizde ne olur? Eğer uygulama bunu doğru şekilde kontrol etmiyorsa, başka bir müşterinin siparişini görebilirsiniz.</p>
-      <p>Bu durum gerçek güvenlik testlerinde oldukça sık karşılaşılan bir açıktır. Kurumların büyük çoğunluğu bu riski taşıdığını bilmeden yıllarca çalışabilir. <strong>KVKK uyumluluğu</strong> açısından da kritik bir sorun oluşturur.</p>
-    </div>
-    <div class="vuln-art orange-bg">
-      <svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg" width="180" height="160">
-        <circle cx="40" cy="50" r="16" fill="#fed7aa" stroke="#f97316" stroke-width="1.5"/>
-        <text x="40" y="55" text-anchor="middle" fill="#7c2d12" font-size="11" font-weight="bold">A</text>
-        <circle cx="140" cy="50" r="16" fill="#fef3c7" stroke="#f59e0b" stroke-width="1.5"/>
-        <text x="140" y="55" text-anchor="middle" fill="#78350f" font-size="11" font-weight="bold">B</text>
-        <rect x="110" y="90" width="60" height="50" rx="6" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/>
-        <line x1="118" y1="104" x2="162" y2="104" stroke="#fde68a" stroke-width="1.5"/>
-        <line x1="118" y1="114" x2="162" y2="114" stroke="#fde68a" stroke-width="1.5"/>
-        <line x1="118" y1="124" x2="150" y2="124" stroke="#fde68a" stroke-width="1.5"/>
-        <text x="140" y="148" text-anchor="middle" fill="#92400e" font-size="7.5" font-family="Inter,sans-serif">Müşteri Verisi B</text>
-        <path d="M56 65 Q110 70 112 88" stroke="#ef4444" stroke-width="2" stroke-dasharray="4 3" fill="none" marker-end="url(#arr2)"/>
-        <text x="88" y="62" text-anchor="middle" fill="#ef4444" font-size="8" font-family="monospace">?id=1246</text>
-        <defs><marker id="arr2" markerWidth="6" markerHeight="6" refX="3" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#ef4444"/></marker></defs>
-        <text x="90" y="148" text-anchor="middle" fill="#ef4444" font-size="9" font-family="Inter,sans-serif" font-weight="600">Yetkisiz Erişim</text>
-      </svg>
-    </div>
-  </div>
-
-  <div class="vuln-card">
-    <div class="vuln-art">
-      <svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg" width="180" height="160">
-        <rect x="30" y="30" width="120" height="90" rx="10" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
-        <rect x="44" y="46" width="92" height="16" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
-        <rect x="44" y="68" width="92" height="16" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
-        <rect x="44" y="90" width="92" height="16" rx="4" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
-        <text x="90" y="58" text-anchor="middle" fill="#166534" font-size="8" font-family="monospace">v3.2 — güncel ✓</text>
-        <text x="90" y="80" text-anchor="middle" fill="#166534" font-size="8" font-family="monospace">v2.8 — güncel ✓</text>
-        <text x="90" y="102" text-anchor="middle" fill="#ef4444" font-size="8" font-family="monospace">v1.4 — 2019 !</text>
-        <circle cx="148" cy="90" r="12" fill="#ef4444"/>
-        <text x="148" y="95" text-anchor="middle" fill="white" font-size="14" font-weight="bold">!</text>
-        <text x="90" y="140" text-anchor="middle" fill="#ef4444" font-size="9" font-family="Inter,sans-serif" font-weight="600">Güncellenmemiş Bileşen</text>
-      </svg>
-    </div>
-    <div class="vuln-body">
-      <span class="vuln-num green">Açık 03</span>
-      <h3>Eski veya Güncellenmemiş Sistemler Risk Oluşturuyor</h3>
-      <p>Web uygulamaları yalnızca sizin yazdığınız koddan oluşmaz. Arkasında onlarca farklı bileşen, kütüphane ve eklenti çalışır. Bu bileşenlerin biri bile güncellenmemişse, saldırganlar o bileşenin bilinen açığını kullanarak sisteminize girebilir.</p>
-      <p>Bu tür risklerin can sıkıcı yanı, teknik açıdan çözümü görece basit olmakla birlikte çok az kurumun bu kontrolü düzenli yaptırmasıdır.</p>
-    </div>
-  </div>
-
-  <div class="callout info">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-    <div class="callout-body"><strong>Basit ama kritik önlem</strong><p>Kullandığınız tüm yazılım bileşenlerinin güncel olup olmadığını periyodik olarak kontrol etmek, en yaygın saldırı yüzeylerinden birini ortadan kaldırır.</p></div>
-  </div>
-
-  <div class="vuln-card alt">
-    <div class="vuln-body">
-      <span class="vuln-num purple">Açık 04</span>
-      <h3>Şifreler ve Oturum Bilgileri Yeterince Korunmuyor</h3>
-      <p>Kullanıcı şifrelerinin nasıl saklandığı çoğu zaman göz ardı edilen bir konudur. Bir güvenlik açığı yaşandığında, şifreler doğru yöntemlerle saklanmamışsa saldırganlar bunlara kolaylıkla ulaşabilir.</p>
-      <p>Bunun yanı sıra giriş ekranlarında yeterli koruma olmadığında, saldırganlar çok sayıda şifreyi otomatik olarak deneyebilir. <strong>İki adımlı doğrulama</strong> bu riski önemli ölçüde azaltan basit ama etkili bir önlemdir.</p>
-    </div>
-    <div class="vuln-art purple-bg">
-      <svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg" width="180" height="160">
-        <rect x="25" y="28" width="130" height="95" rx="10" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.5"/>
-        <text x="90" y="48" text-anchor="middle" fill="#4c1d95" font-size="9" font-weight="bold" font-family="Inter,sans-serif">Giriş Yap</text>
-        <rect x="38" y="56" width="104" height="18" rx="4" fill="white" stroke="#ddd6fe" stroke-width="1"/>
-        <text x="48" y="69" fill="#a78bfa" font-size="8" font-family="monospace">admin</text>
-        <rect x="38" y="82" width="104" height="18" rx="4" fill="white" stroke="#ddd6fe" stroke-width="1"/>
-        <text x="48" y="95" fill="#c4b5fd" font-size="8" font-family="monospace">•••••••••</text>
-        <text x="155" y="72" fill="#ef4444" font-size="7" font-family="monospace">→ try1</text>
-        <text x="155" y="84" fill="#ef4444" font-size="7" font-family="monospace">→ try2</text>
-        <text x="155" y="96" fill="#ef4444" font-size="7" font-family="monospace">→ try3</text>
-        <rect x="38" y="108" width="104" height="8" rx="3" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
-        <text x="90" y="115" text-anchor="middle" fill="#ef4444" font-size="7" font-family="monospace">2FA YOK</text>
-        <text x="90" y="142" text-anchor="middle" fill="#7c3aed" font-size="9" font-family="Inter,sans-serif" font-weight="600">Kaba Kuvvet Saldırısı</text>
-      </svg>
-    </div>
-  </div>
-
-  <div class="vuln-card">
-    <div class="vuln-art">
-      <svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg" width="180" height="160">
-        <path d="M130 90 Q150 90 150 72 Q150 55 132 55 Q130 40 114 40 Q100 40 96 52 Q84 48 78 60 Q65 60 65 72 Q65 90 85 90 Z" fill="#e0f2fe" stroke="#7dd3fc" stroke-width="1.5"/>
-        <rect x="84" y="64" width="30" height="22" rx="5" fill="#fee2e2" stroke="#f87171" stroke-width="1.5"/>
-        <path d="M90 64 Q90 56 99 56 Q108 56 108 64" fill="none" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
-        <path d="M108 60 L112 54" stroke="#f87171" stroke-width="1.5" stroke-linecap="round"/>
-        <circle cx="99" cy="73" r="3.5" fill="#f87171"/>
-        <rect x="97.5" y="75" width="3" height="5" rx="1" fill="#f87171"/>
-        <text x="99" y="106" text-anchor="middle" fill="#ef4444" font-size="8" font-family="monospace" font-weight="bold">PUBLIC</text>
-        <line x1="150" y1="80" x2="165" y2="72" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 2"/>
-        <line x1="150" y1="75" x2="168" y2="80" stroke="#ef4444" stroke-width="1" stroke-dasharray="3 2"/>
-        <text x="90" y="140" text-anchor="middle" fill="#ef4444" font-size="9" font-family="Inter,sans-serif" font-weight="600">Yanlış Yapılandırma</text>
-      </svg>
-    </div>
-    <div class="vuln-body">
-      <span class="vuln-num">Açık 05</span>
-      <h3>Yanlış Kurulmuş Sistemler Sessiz Tehlike Oluşturuyor</h3>
-      <p>Bir uygulamanın güvenli çalışması için sadece kodun doğru yazılması yetmez. Uygulamanın çalıştığı sunucunun ve diğer bileşenlerin de doğru yapılandırılması gerekir.</p>
-      <p>Hata mesajları saldırganlara sistem hakkında ipucu verebilir ya da bulut ortamında yanlış ayarlanmış bir depolama alanı tüm dosyaları internete açık hale getirebilir. Bu sorunlar çoğunlukla kurulum sırasında oluşur ve uzun süre fark edilmez.</p>
-    </div>
-  </div>
-
-  <div class="vuln-card alt">
-    <div class="vuln-body">
-      <span class="vuln-num teal">Açık 06</span>
-      <h3>Zararlı İçeriklerin Sayfaya Enjekte Edilmesi</h3>
-      <p>Bir web sitesi üzerinden yapılan bazı saldırılarda hedef, sisteminiz değil; kullanıcılarınızdır. Saldırgan uygulamanızdaki bir açığı kullanarak, sayfayı ziyaret eden kişilerin tarayıcısında gizlice zararlı işlemler gerçekleştirebilir.</p>
-      <p>Sonuç olarak kullanıcıların oturum bilgileri çalınabilir, başka bir siteye yönlendirilebilirler ya da farkında olmadan zararlı içeriklere maruz kalabilirler. Bu durum hem kullanıcı güvenini hem de kurumsal itibarı doğrudan zedeler.</p>
+      <span class="vuln-num teal">XSS Zafiyeti</span>
+      <h3>Siteler Arası Betik Enjeksiyonu</h3>
+      <p>Uygulamanın, kullanıcıdan aldığı bir metni sayfada gösterirken içeriği kontrol etmemesi durumunda ortaya çıkar. Sayfayı açan bir kullanıcının tarayıcısında istem dışı işlemler gerçekleşebilir; oturum bilgileri ele geçirilebilir.</p>
     </div>
     <div class="vuln-art teal-bg">
       <svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg" width="180" height="160">
@@ -414,14 +302,55 @@
     </div>
   </div>
 
-  <h2 id="etki">Güvenlik Açığı Kurumu Nasıl Etkiler?</h2>
-  <p>Teknik bir açıkla başlayan süreç çoğu zaman operasyonel, hukuki ve finansal sonuçlara kadar uzanır. Bu etki zincirinin nerede kırılabileceğini anlamak, doğru önceliklendirmenin temelidir.</p>
+  <div class="vuln-card">
+    <div class="vuln-art purple-bg">
+      <svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg" width="180" height="160">
+        <rect x="30" y="40" width="120" height="80" rx="10" fill="#f5f3ff" stroke="#c4b5fd" stroke-width="1.5"/>
+        <text x="90" y="60" text-anchor="middle" fill="#4c1d95" font-size="9" font-family="monospace">config.js</text>
+        <rect x="40" y="70" width="100" height="18" rx="4" fill="#fef2f2" stroke="#fca5a5" stroke-width="1"/>
+        <text x="45" y="82" fill="#ef4444" font-size="8" font-family="monospace">api_key="AKIAIOS..."</text>
+        <rect x="40" y="95" width="100" height="14" rx="4" fill="white" stroke="#ddd6fe" stroke-width="1"/>
+        <line x1="45" y1="102" x2="110" y2="102" stroke="#c4b5fd" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="90" y="142" text-anchor="middle" fill="#7c3aed" font-size="9" font-family="Inter,sans-serif" font-weight="600">Hardcoded Kimlik Bilgileri</text>
+      </svg>
+    </div>
+    <div class="vuln-body">
+      <span class="vuln-num purple">Gizlilik Zafiyeti</span>
+      <h3>Şifrenin Doğrudan Koda Yazılması</h3>
+      <p>Veritabanı bağlantı bilgisi ya da bir harici servis anahtarının kod dosyasına gömülmesi sık rastlanan bir hatadır. Kaynak koda erişim yetki sınırı çoğu kurumda düşündüğünden geniştir; bu da söz konusu bilgilerin tahmin edilenden fazla kişiye açık olduğu anlamına gelir.</p>
+    </div>
+  </div>
+
+  <div class="vuln-card alt">
+    <div class="vuln-body">
+      <span class="vuln-num green">Bağımlılıklar</span>
+      <h3>Güvenlik Güncellemesi Almayan Kütüphaneler</h3>
+      <p>Projenin kullandığı üçüncü parti kütüphaneler zaman içinde eski sürümlere düşer. Bu sürümlerde bulunan ve kamuya açık hale gelmiş açıklar, saldırganların ilk kontrol ettiği noktalardır.</p>
+    </div>
+    <div class="vuln-art green-bg">
+      <svg viewBox="0 0 180 160" xmlns="http://www.w3.org/2000/svg" width="180" height="160">
+        <rect x="30" y="30" width="120" height="90" rx="10" fill="#f0fdf4" stroke="#6ee7b7" stroke-width="1.5"/>
+        <rect x="44" y="46" width="92" height="16" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+        <rect x="44" y="68" width="92" height="16" rx="4" fill="#dcfce7" stroke="#86efac" stroke-width="1"/>
+        <rect x="44" y="90" width="92" height="16" rx="4" fill="#fef2f2" stroke="#fca5a5" stroke-width="1.5"/>
+        <text x="90" y="58" text-anchor="middle" fill="#166534" font-size="8" font-family="monospace">v3.2 — güncel ✓</text>
+        <text x="90" y="80" text-anchor="middle" fill="#166534" font-size="8" font-family="monospace">v2.8 — güncel ✓</text>
+        <text x="90" y="102" text-anchor="middle" fill="#ef4444" font-size="8" font-family="monospace">v1.4 — 2019 !</text>
+        <circle cx="148" cy="90" r="12" fill="#ef4444"/>
+        <text x="148" y="95" text-anchor="middle" fill="white" font-size="14" font-weight="bold">!</text>
+        <text x="90" y="140" text-anchor="middle" fill="#ef4444" font-size="9" font-family="Inter,sans-serif" font-weight="600">Güncellenmemiş Bileşen</text>
+      </svg>
+    </div>
+  </div>
+
+  <h2 id="etki">Bu Açıkların Kurumsal Sonuçları Ne Olur?</h2>
+  <p>Yazılım kaynaklı güvenlik açıkları, teknik bir hata olmanın çok ötesine geçer. Bir e-ticaret platformunda müşterilere ait ödeme bilgilerinin ele geçirilmesi, finans sisteminde yapılan yetkisiz işlemler ya da sağlık verilerinin ifşa olması — bunların hepsinin gerisinde ufak görünen bir kod hatası yatabilir.</p>
 
   <div class="impact-wrap">
     <div class="impact-head">
-      <div class="impact-eyebrow">Kurumsal Risk Analizi</div>
-      <h3>Bir İhlalin Dört Boyutu</h3>
-      <p>Güvenlik açıkları yalnızca teknik bir sorun değildir. Her açık, kurumun farklı bir katmanında somut bir risk taşır.</p>
+      <div class="impact-eyebrow">Zamanlama ve Maliyet Etkisi</div>
+      <h3>Tespit Aşamasının Farkı</h3>
+      <p>Geliştirme aşamasında bulunan bir açık, genellikle birkaç kod satırıyla kapatılır. Aynı açık üretimde (canlı sistemde) tespit edildiğinde ise tablo tamamen değişir.</p>
     </div>
     <div class="impact-grid">
       <div class="impact-card fin">
@@ -429,8 +358,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
         </div>
         <div>
-          <h4>Finansal Kayıp</h4>
-          <p>Veri ihlali sonrasında ortaya çıkan acil müdahale maliyetleri, sistem onarım giderleri ve olası fidye talepleri kurumun bütçesini doğrudan etkiler. Bu maliyet önceden yapılabilecek bir güvenlik testinin çok üzerindedir.</p>
+          <h4>Finansal Maliyet</h4>
+          <p>Üretime geçmiş bir sistemde açığın kapatılması çok daha maliyetlidir.</p>
         </div>
       </div>
       <div class="impact-card law">
@@ -438,17 +367,8 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
         </div>
         <div>
-          <h4>Hukuki Yaptırım</h4>
-          <p>KVKK kapsamındaki kişisel verilerin ihlali, idari para cezalarına ve hukuki süreçlere yol açabilir. Kişisel veri barındıran her uygulama bu risk altındadır; ihlal gerçekleşmeden önce güvenlik durumunun bilinmesi yasal yükümlülüğün bir parçasıdır.</p>
-        </div>
-      </div>
-      <div class="impact-card ops">
-        <div class="impact-icon ops-i">
-          <svg viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-        </div>
-        <div>
-          <h4>Operasyonel Kesinti</h4>
-          <p>Bir saldırı sonucunda sistemlerin çevrimdışına alınması, hizmet aksaklıkları ve müşteri taleplerinin karşılanamaması, kurumun günlük işleyişini doğrudan sekteye uğratır. Bu süre ne kadar uzarsa etki o kadar derinleşir.</p>
+          <h4>Yasal Yaptırımlar</h4>
+          <p>Veri ihlali durumunda yasal süreçler ve para cezaları devreye girer.</p>
         </div>
       </div>
       <div class="impact-card rep">
@@ -456,69 +376,114 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
         </div>
         <div>
-          <h4>İtibar ve Müşteri Güveni</h4>
-          <p>Veri ihlalinin kamuoyuna yansıması, müşteri güven kaybına ve marka değerinin düşmesine neden olur. Bu hasar finansal kayıpların aksine kısa sürede telafi edilemez; uzun vadeli müşteri ilişkilerini kalıcı olarak etkileyebilir.</p>
+          <h4>İtibar Hasarı</h4>
+          <p>Etkilenen müşterilere bildirim yapılması marka güvenini doğrudan zedeler.</p>
         </div>
       </div>
+      <div class="impact-card ops">
+        <div class="impact-icon ops-i">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        </div>
+        <div>
+          <h4>Operasyonel İnceleme</h4>
+          <p>İhlalin kök nedenini bulmak operasyonel ekiplerin tüm enerjisini tüketir.</p>
+        </div>
+    </div>
+  </div>
+  </div>
+  <p>Bu nedenle kaynak kod analizi yalnızca güvenlik ekibinin gündemindeki teknik bir madde değil, kurumun yazılım riskini yönetme biçiminin bir parçasıdır.</p>
+
+  <h2 id="nasil-calisir">SonarQube Nasıl Çalışır?</h2>
+  <p>SonarQube, kaynak kodu tarayarak güvenlik açıklarını, kod kalite sorunlarını ve riskli yazım alışkanlıklarını tespit eden bir platformdur. Java, Python, JavaScript, C#, PHP, Go başta olmak üzere 25'ten fazla programlama dilini destekler. Ücretsiz kullanılabilen Community Edition sürümü küçük ekipler için de erişilebilir; daha kapsamlı kurumsal ihtiyaçlar için ücretli sürümler mevcuttur.</p>
+
+  <div class="callout info">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#1a56db" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <div class="callout-body"><strong>Bulguların Kategorizasyonu</strong>
+      <p>Bir SonarQube taraması tamamlandığında bulgular üç ana gruba ayrılır:<br>
+      • <strong>Güvenlik açıkları:</strong> Saldırganların doğrudan kullanabileceği, kritiklik derecesine göre önceliklendirilmiş sorunlardır (tam konum ve düzeltme rehberi sunulur).<br>
+      • <strong>Güvenlik sıcak noktaları:</strong> Kesin bir açık sayılmayan ama insan değerlendirmesi gerektiren hassas alanlardır.<br>
+      • <strong>Kod kokuları (Code Smells):</strong> Anlık tehdit oluşturmayan ama zamanla sorun zemini hazırlayan zayıf yazım pratiklerini kapsar.</p>
     </div>
   </div>
 
-  <h2 id="onlem">Kurumlar Bu Risklere Karşı Ne Yapmalı?</h2>
-  <p>Web uygulaması güvenliği, bir kez alınan ve unutulan bir önlem değildir. Her kod güncellemesi, yeni bir özellik eklenmesi ya da bileşen değişikliği yeni bir risk penceresi açabilir.</p>
+  <h2 id="surec">Analiz Süreci Nasıl İlerler?</h2>
   <ul>
-    <li><strong>Durum tespiti:&nbsp;</strong>Uygulamanızın güvenlik açığı barındırıp barındırmadığını anlamak için profesyonel güvenlik testi yaptırın.</li>
-    <li><strong>Güncel tutun:&nbsp;</strong>Sistemlerinizde kullanılan yazılım bileşenlerinin güncel olduğundan periyodik olarak emin olun.</li>
-    <li><strong>Erişim kontrolü:&nbsp;</strong>Kullanıcı hesaplarını iki adımlı doğrulama ile koruyun, özellikle yönetici panelleri için.</li>
-    <li><strong>Düzenli denetim:&nbsp;</strong>Güvenlik denetimlerini yılda en az bir kez, büyük güncellemeler sonrasında ise mutlaka yaptırın.</li>
-    <li><strong>Veri koruması:&nbsp;</strong>Kullanıcı verisi ve ödeme bilgilerini şifreli biçimde saklayın.</li>
+    <li><strong>Aşama 1: Kurulum ve Kural Konfigürasyonu:</strong> SonarQube şirketin kendi altyapısına kurulabilir ya da bulut tabanlı çalıştırılabilir. Hangi projeler analiz kapsamına alınacağı ve bu projeler için hangi güvenlik kuralları geçerli olacağı belirlenir. Kural yapılandırması kritik bir adımdır (örn. Ödeme altyapısı için PCI DSS kuralları).</li>
+    <li><strong>Aşama 2: Sürekli Otomatik Tarama:</strong> İşlemin yazılım geliştirme döngüsüne otomatik olarak entegre edilmesidir. Bir geliştirici kodu merkezi sisteme her gönderdiğinde SonarQube devreye girer ve değişikliği anında inceler. Güvenlik sürecin dışında bir kapı değil, içinde bir katmandır.</li>
+    <li><strong>Aşama 3: Quality Gate Değerlendirmesi:</strong> Quality Gate (kalite kapısı), yazılımın üretime geçip geçemeyeceğini belirleyen otomatik bir kriterler bütünüdür. Örneğin "yeni eklenen hiçbir kod kritik güvenlik açığı içermesin" kuralını karşılamayan bir değişiklik, sistemi durdurur ve geri bildirim sağlar.</li>
   </ul>
 
-  <div class="callout success">
-    <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-    <div class="callout-body"><strong>Yatırım mı, maliyet mi?</strong><p>Düzenli güvenlik testleri bir maliyet değil; veri ihlali, itibar kaybı ve yasal yaptırım gibi çok daha yüksek maliyetlerin önüne geçen bir yatırımdır.</p></div>
+  <h2 id="standartlar">Hangi Standartlar Temel Alınır?</h2>
+  <p>SonarQube'ün güvenlik kuralları, sektörün yerleşik çerçevelerinden beslenir. Web uygulamalarındaki yaygın güvenlik risklerini listeleyen <strong>OWASP Top 10</strong>'un tamamı için kurallara sahiptir. Bunun yanı sıra güvenlik açıklarını kategorilere ayıran <strong>CWE</strong> (Common Weakness Enumeration) veritabanını ve <strong>SANS Top 25</strong> listesini referans alır.</p>
+  <p><strong>ISO 27001</strong> kapsamında bilgi güvenliği yönetim sistemi oluşturmak isteyen kurumlar için kaynak kod kontrolü temel gereksinimlerden birini oluşturur. Kart ve ödeme verisi işleyen sistemlerde zorunlu tutulan <strong>PCI DSS</strong> standartları da kaynak kod güvenliği konusunda belirli kontroller öngörür.</p>
+
+  <h2 id="guvenilirlik">Otomatik Tarama Ne Kadar Güvenilirdir?</h2>
+  <p>SonarQube bilinen açık kalıplarını ve güvensiz yazım pratiklerini büyük ölçekli kod tabanlarında bile tutarlı biçimde tespit eder. İnsan gözünün kaçırabileceği tekrarlayan hataları yakalamada ciddi bir avantaj sağlar.</p>
+  <p>Ne var ki bazı güvenlik sorunları otomatik araçların kapsamı dışında kalır. Özellikle <strong>iş mantığına dayalı açıklar</strong> bu kategoridedir. Bir kullanıcının yalnızca kendi verilerine erişebildiğini doğrulayan bir ekran, kod satırı bazında hatasız görünebilir. Ama yetki kontrolü yanlış konumlandırılmışsa (sunucuda tekrarlanmamışsa) bu ekran başka kullanıcıların verilerine kapı aralayabilir. Otomatik bir araç bu mantık hatasını çoğunlukla göremez.</p>
+  <p>Bu yüzden en verimli güvenlik programları, otomatik taramayı <strong>periyodik uzman sızma testleriyle (pentest)</strong> birlikte yürütür. Otomasyon genişliği sağlar, uzman incelemesi derinliği.</p>
+
+  <div class="callout warn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <div class="callout-body"><strong>Gerçek Hayat Senaryosu</strong>
+      <p>B2B alanda faaliyet gösteren orta ölçekli bir teknoloji şirketinde yapılan taramada iki kritik bulgu döndü: 1) Kullanıcı hesaplarına ait kimlik doğrulama tokenları yeterince karmaşık değildi ve tahmin edilebilirdi. 2) Kullanıcı kimliği doğrulama katmanı veri çekme işleminin önüne değil ardına yerleştirilmişti (Sistem önce veriyi getiriyor, sonra kimin istediğini kontrol ediyordu). Sızma testleriyle de doğrulanan bu açıklar, herhangi bir müşteri verisi etkilenmeden kapatıldı.</p>
+    </div>
   </div>
+
+  <h2 id="duzenli">Neden Düzenli Analiz Yapılması Gerekir?</h2>
+  <p>Yazılım bir kez teslim edilip biten bir iş değildir. Her sprint'te eklenen yeni özellikler, değiştirilen bileşenler ve güncellenen bağımlılıklar yeni güvenlik değişkenleri yaratır. Tek seferlik yapılan bir tarama, geliştirme sürecinin ilerleyen aşamalarında oluşan sorunları göremez.</p>
+  <p>Düzenli analizin somut karşılıkları vardır: Erken tespit edilen her açık, üretim ortamına taşınan aynı açığa kıyasla çok daha düşük maliyetle kapatılır. Geliştiriciler anlık geri bildirimler sayesinde güvenli yazım alışkanlıkları edinir ve kod tabanı teknik birikim borcu yerine temiz kalır.</p>
 
   <h2 id="hatalar">Kurumların Sıkça Yaptığı Hatalar</h2>
   <div class="mistake-grid">
     <div class="mistake">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-      <p>Web sitesi yayına alındıktan sonra güvenlik testi yaptırmayı ertelemek ya da hiç yapmamak</p>
+      <p>SonarQube'ü kurumun geliştirme döngüsüne bağlamadan, yalnızca tek seferlik bir manuel tarama aracı gibi kullanmak.</p>
     </div>
     <div class="mistake">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-      <p>Güvenlik testini yalnızca yasal zorunluluk nedeniyle yapmak ve bulgularla ilgilenmemek</p>
+      <p>Bulguların zaman baskısıyla "Şimdilik devam et, sonra bakarız" denilerek geçilmesi ve gerçek risklerin gürültüde kaybolması.</p>
     </div>
     <div class="mistake">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-      <p>Sistemin kullandığı yazılım bileşenlerini yıllarca güncellemeden bırakmak</p>
+      <p>Tarama raporu %100 temiz çıktığında, sistemin tamamen güvende olduğu sonucuna varıp uzman sızma testini ihmal etmek.</p>
     </div>
     <div class="mistake">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-      <p>Güvenlik açığı raporunu alıp düzeltme sürecini süresiz ertelemek</p>
+      <p>İş mantığı hataları, yetki atlatma gibi araçların bulamayacağı kör noktalar için herhangi bir ek kontrol mekanizması kurmamak.</p>
     </div>
   </div>
 
   <h2 id="sss">Sık Sorulan Sorular</h2>
 
   <div class="faq open" id="f1">
-    <div class="faq-q" onclick="toggleFaq('f1')">Web uygulamamız her gün sorunsuz çalışıyor; güvende olduğumuz anlamına gelir mi?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-    <div class="faq-a">Hayır. Siber saldırıların büyük çoğunluğu arka planda fark edilmeden gerçekleşir. Sistem sorunsuz çalışıyor görünse de verilerinize erişilmiş, kopyalanmış ya da sistemde kalıcı bir yer tutulmuş olabilir. Güvenli görünmek ile güvenli olmak farklı şeylerdir.</div>
+    <div class="faq-q" onclick="toggleFaq('f1')">SonarQube ücretsiz kullanılabilir mi?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+    <div class="faq-a">Community Edition sürümü ücretsiz ve açık kaynaklıdır. Dal bazlı analiz, gelişmiş güvenlik raporlaması ve ek dil desteği gibi özellikler için Developer, Enterprise ve Data Center Edition sürümleri ayrıca sunulmaktadır.</div>
   </div>
   <div class="faq" id="f2">
-    <div class="faq-q" onclick="toggleFaq('f2')">Güvenlik testi ne kadar sürer, işlerimizi aksatır mı?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-    <div class="faq-a">Kapsamına göre değişmekle birlikte testler genellikle birkaç gün ile iki hafta arasında tamamlanır. Test süreci, uygulamanın normal çalışmasını engellemeyecek şekilde planlanır. Canlı sistemlere zarar verilmeden değerlendirme yapılması bu sürecin temelidir.</div>
+    <div class="faq-q" onclick="toggleFaq('f2')">Kaynak kod analizi ile sızma testi arasındaki fark nedir?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+    <div class="faq-a">Kaynak kod analizi, yazılımın kod yapısını çalışmadan inceler; geliştirme sürecinde her değişiklikte otomatik devreye girebilir. Sızma testi, çalışan uygulamaya karşı saldırgan perspektifiyle yürütülen aktif bir güvenlik testidir. İkisi farklı katmanları kapsar.</div>
   </div>
   <div class="faq" id="f3">
-    <div class="faq-q" onclick="toggleFaq('f3')">Küçük ya da orta ölçekli işletmeler de hedef alınır mı?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-    <div class="faq-a">Saldırganlar çoğunlukla otomatik araçlarla interneti tarar ve güvenlik açığı bulunan her sistemi hedef alır. Kurumun büyüklüğü değil, sistemin güvenlik durumu belirleyicidir.</div>
+    <div class="faq-q" onclick="toggleFaq('f3')">Küçük ölçekli firmalar da bu analizi yaptırmalı mı?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+    <div class="faq-a">Müşteri verisi işleyen, ödeme altyapısı kullanan ya da kurumsal müşterilere yazılım sunan her yapı bu analizden fayda sağlar. SonarQube'ün ücretsiz sürümü, büyük yatırım gerekmeden başlamayı mümkün kılar.</div>
   </div>
   <div class="faq" id="f4">
-    <div class="faq-q" onclick="toggleFaq('f4')">KVKK ile web uygulaması güvenliğinin ilişkisi nedir?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-    <div class="faq-a">KVKK, kişisel verilerin korunması amacıyla kurumların uygun güvenlik önlemlerini almasını zorunlu kılar. Web uygulamanızdaki bir açık nedeniyle müşteri verilerinin ele geçirilmesi hem itibar hem de yasal yaptırım açısından ciddi sonuçlar doğurabilir.</div>
+    <div class="faq-q" onclick="toggleFaq('f4')">SonarQube hangi dilleri destekler?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+    <div class="faq-a">Java, Python, JavaScript, TypeScript, C#, C/C++, PHP, Go, Ruby, Kotlin ve Swift dahil 25'ten fazla dil desteklenmektedir.</div>
   </div>
   <div class="faq" id="f5">
-    <div class="faq-q" onclick="toggleFaq('f5')">Ne sıklıkla güvenlik testi yaptırmalıyız?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
-    <div class="faq-a">Genel kural olarak yılda en az bir kez kapsamlı değerlendirme önerilir. Uygulamanızda büyük bir güncelleme yapıldığında ya da yeni bir modül eklendiğinde de güvenlik testi yapmak riski baştan önler.</div>
+    <div class="faq-q" onclick="toggleFaq('f5')">SonarQube tüm güvenlik açıklarını bulabilir mi?<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div>
+    <div class="faq-a">Bilinen zafiyet kalıpları ve güvensiz yazım pratikleri konusunda tutarlı sonuçlar verir. Ancak iş mantığı hataları ve çalışma zamanı koşullarına bağlı açıklar için sızma testi (pentest) ile desteklenmesi şarttır.</div>
+  </div>
+
+  <h2 id="sonuc">Güvenlik: İlk Halkanın Disiplini</h2>
+  <p>Güvenlik, yazılımın son halkasına değil ilk halkasına ait bir meseledir. Kod yazılmadan önce tasarımda, yazılırken geliştirme sürecinde, her güncellemede tekrar gözden geçirilmesi gereken bir disiplindir. SonarQube bu disiplini otomatize etmenin en yaygın yollarından birini sunar. Ama otomasyon bir başlangıç noktasıdır; bitiş noktası değil. Sistematik güvenlik, otomatik araçların gördükleri ile bir uzmanın baktığında gördüklerinin birleşiminden ortaya çıkar.</p>
+
+  <div class="callout success">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+    <div class="callout-body"><strong>Sibertim ile Yazılım Güvenliğinizi Değerlendirin</strong>
+      <p>Uygulamalarınızın güvenlik durumunu kaynak kod düzeyinde değerlendirmek, riskleri yayına girmeden önce tespit etmek ve güvenlik süreçlerinizi olgun bir yapıya kavuşturmak istiyorsanız <strong>Sibertim</strong>'in kaynak kod incelemesi ve web uygulama sızma testi hizmetlerinden yararlanabilirsiniz. Sibertim, otomatik analiz araçlarını derinlemesine manuel incelemeyle birlikte uygulayarak uygulamanızın gerçek güvenlik profilini ortaya koyar.</p>
+    </div>
   </div>
 
 </article>
@@ -526,22 +491,26 @@
 <aside class="sidebar">
   <div class="s-card">
     <h4>İçindekiler</h4>
-    <a class="toc-link" href="#giris">Görünmeyen Tehlike</a>
-    <a class="toc-link" href="#neden">Neden Hedef Alınıyor?</a>
-    <a class="toc-link" href="#aciklar">En Sık Açıklar</a>
+    <a class="toc-link" href="#giris">Saldırı Öncesi Açıklar</a>
+    <a class="toc-link" href="#nedir">SAST Nedir?</a>
+    <a class="toc-link" href="#kategoriler">En Sık Açıklar</a>
     <a class="toc-link" href="#etki">Kurumsal Etki</a>
-    <a class="toc-link" href="#onlem">Ne Yapılmalı?</a>
+    <a class="toc-link" href="#nasil-calisir">SonarQube Nedir?</a>
+    <a class="toc-link" href="#surec">Analiz Süreci</a>
+    <a class="toc-link" href="#standartlar">İlgili Standartlar</a>
+    <a class="toc-link" href="#guvenilirlik">Otomasyon vs Uzman</a>
+    <a class="toc-link" href="#duzenli">Neden Düzenli Analiz?</a>
     <a class="toc-link" href="#hatalar">Yaygın Hatalar</a>
     <a class="toc-link" href="#sss">Sık Sorulan Sorular</a>
   </div>
   <div class="s-card">
     <h4>Risk Seviyeleri</h4>
-    <div class="risk-row"><span>Giriş Noktaları</span><span class="risk-dot d-red"></span></div>
-    <div class="risk-row"><span>Yetkisiz Erişim</span><span class="risk-dot d-red"></span></div>
-    <div class="risk-row"><span>Eski Bileşenler</span><span class="risk-dot d-red"></span></div>
-    <div class="risk-row"><span>Şifre Güvenliği</span><span class="risk-dot d-orange"></span></div>
-    <div class="risk-row"><span>Yapılandırma</span><span class="risk-dot d-orange"></span></div>
-    <div class="risk-row"><span>Kod Enjeksiyonu</span><span class="risk-dot d-orange"></span></div>
+    <div class="risk-row"><span>SQL Injection</span><span class="risk-dot d-red"></span></div>
+    <div class="risk-row"><span>Kimlik Doğrulama</span><span class="risk-dot d-red"></span></div>
+    <div class="risk-row"><span>XSS Zafiyeti</span><span class="risk-dot d-orange"></span></div>
+    <div class="risk-row"><span>Eski Kütüphaneler</span><span class="risk-dot d-orange"></span></div>
+    <div class="risk-row"><span>Hardcoded Şifreler</span><span class="risk-dot d-orange"></span></div>
+    <div class="risk-row"><span>İş Mantığı Hataları</span><span class="risk-dot d-orange"></span></div>
     <div style="margin-top:14px;display:flex;gap:14px;font-size:.76rem;color:var(--muted);">
       <span style="display:flex;align-items:center;gap:5px;"><span class="risk-dot d-red" style="width:8px;height:8px;"></span>Yüksek</span>
       <span style="display:flex;align-items:center;gap:5px;"><span class="risk-dot d-orange" style="width:8px;height:8px;"></span>Orta</span>
@@ -551,7 +520,7 @@
 </div>
 
 <footer>
-  <p>Web Uygulama Güvenliği &nbsp;·&nbsp; Siber Güvenlik Blog</p>
+  <p>Kaynak Kod Analizi (SAST) &nbsp;·&nbsp; Sibertim Siber Güvenlik Blog</p>
 </footer>
 
 <script>
@@ -564,3 +533,5 @@
 </script>
 </body>
 </html>
+
+```
