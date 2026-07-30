@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penetration Testing & Reconnaissance | Emir Yildirim</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <style>
+        /* CSS Same as before */
+        :root {
+            --bg-1: #f8fafc; --bg-2: #e2e8f0; --bg-3: #f1f5f9; --bg-4: #cbd5e1;
+            --text-main: #0f172a; --text-muted: #475569;
+            --nav-bg: rgba(255, 255, 255, 0.8); --card-bg: rgba(255, 255, 255, 0.7);
+            --code-bg: #1e293b; --code-text: #e2e8f0; --border-color: #cbd5e1;
+            --accent: #2563eb; --accent-hover: #1d4ed8; --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-1: #0f172a; --bg-2: #1e293b; --bg-3: #020617; --bg-4: #172554;
+            --text-main: #ffffff; --text-muted: #94a3b8;
+            --nav-bg: rgba(15, 23, 42, 0.8); --card-bg: rgba(30, 41, 59, 0.7);
+            --code-bg: #020617; --code-text: #e2e8f0; --border-color: #334155;
+            --accent: #3b82f6; --accent-hover: #60a5fa; --shadow: rgba(59, 130, 246, 0.4);
+        }
+
+        body {
+            margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4));
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
+            line-height: 1.7; min-height: 100vh; transition: color 0.4s ease, background 0.4s ease;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .navbar { background: var(--nav-bg); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; transition: background 0.4s ease, border-color 0.4s ease; }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        #theme-toggle { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; margin-left: 25px; cursor: pointer; transition: color 0.3s, transform 0.3s; }
+        #theme-toggle:hover { color: var(--accent); transform: scale(1.1); }
+
+        .article-container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.95rem; margin-bottom: 30px; transition: color 0.3s; }
+        .back-link:hover { color: var(--accent); }
+
+        .article-header { text-align: center; padding: 30px 20px 40px; border-bottom: 1px solid var(--border-color); margin-bottom: 40px; }
+        .article-header h1 { font-size: 2.5rem; color: var(--accent); margin: 0 0 20px 0; line-height: 1.3; }
+        .article-meta { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; color: var(--text-muted); font-size: 0.95rem; }
+        .article-meta span { display: flex; align-items: center; gap: 6px; }
+        .article-meta i { color: var(--accent); }
+
+        .article-content { background: var(--card-bg); backdrop-filter: blur(10px); padding: 40px; border-radius: 15px; border-left: 4px solid var(--accent); transition: background 0.4s ease, border-color 0.4s ease; }
+        .article-content h2 { color: var(--accent); font-size: 1.7rem; margin-top: 40px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .article-content h2:first-child { margin-top: 0; }
+        .article-content h3 { color: var(--text-main); font-size: 1.25rem; margin-top: 25px; margin-bottom: 10px; }
+        .article-content p { color: var(--text-muted); margin-bottom: 15px; }
+        .article-content strong { color: var(--text-main); }
+        .article-content ul { color: var(--text-muted); margin-bottom: 15px; }
+        .article-content li { margin-bottom: 5px; }
+
+        .lead-paragraph { font-size: 1.1rem; font-style: italic; padding: 20px; background: rgba(59, 130, 246, 0.08); border-left: 3px solid var(--accent); border-radius: 8px; margin-bottom: 30px !important; }
+
+        pre { background: var(--code-bg); color: var(--code-text); padding: 18px 20px; border-radius: 10px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.95rem; border: 1px solid var(--border-color); margin: 15px 0; line-height: 1.5; }
+        code { background: var(--bg-2); color: var(--accent); padding: 2px 7px; border-radius: 5px; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.9em; border: 1px solid var(--border-color); }
+        .info-box { display: flex; gap: 15px; padding: 18px 20px; background: rgba(59, 130, 246, 0.08); border-radius: 10px; margin: 20px 0; border-left: 3px solid var(--accent); }
+        .info-box i { color: var(--accent); font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+        .info-box p { margin: 0; }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; padding: 15px 10px; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+            .nav-links a { margin-left: 0; font-size: 0.95rem; }
+            #theme-toggle { margin-left: 5px; }
+            .article-container { margin: 20px auto; padding: 0 15px; }
+            .article-header h1 { font-size: 1.7rem; }
+            .article-content { padding: 25px 20px; }
+            .article-content h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">root@emir:~#</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html">Experience & Projects</a>
+            <a href="blog.html" class="active">MyNotes</a>
+            <a href="daily.html">Personal Space</a>
+            <button id="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+        </div>
+    </nav>
+
+    <div class="article-container">
+        <a href="blog.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to all notes
+        </a>
+
+        <header class="article-header">
+            <h1>Penetration Testing & Reconnaissance</h1>
+            <div class="article-meta">
+                <span><i class="far fa-calendar-alt"></i> March 12, 2026</span>
+                <span><i class="fas fa-tag"></i> PenTest / Recon</span>
+                <span><i class="fas fa-clock"></i> ~15 min read</span>
+            </div>
+        </header>
+
+        <article class="article-content">
+
+            <p class="lead-paragraph">
+                Every single note I took regarding Penetration Testing, Nmap scanning details, Cyber Kill Chain, specific active/passive recon tools, and post-exploitation workflows.
+            </p>
+
+            <h2><i class="fas fa-search"></i> JR PENETRATION TESTER Workflow</h2>
+            <ul>
+                <li>gobuster is a tool to find subdomains.</li>
+                <li>hydra is a bruteforcing tool.</li>
+                <li>first of all reconnaissance starts with nmap scanning.</li>
+                <li>and then we use curl to check http response header.</li>
+                <li>and then we will enumerate the directories with using gobuster.</li>
+                <li>if I detect any kind of API vuln I can use curl for sure with domains and paths.</li>
+                <li>I can try to find some kind of IDOR with this way if URL doesn't allow me to do that: <code>curl -s "http://10.114.187.255/api/user?id=1"</code></li>
+                <li><strong>IDOR -> Insecure Direct Object Reference :</strong> the application uses a predictable identifier to reference objects (user profiles, documents, orders) and does not verify whether the requesting user is authorised to access that specific object.</li>
+            </ul>
+
+            <h2><i class="fas fa-file-upload"></i> uploading a file</h2>
+            <ul>
+                <li>when I see a upload file I always think about remote code execution and I try to upload not allowed file type bypassing html codes.</li>
+                <li>I can always try to upload different types of file txt, php, phtml -> generally apache server allows this type of file.</li>
+                <li>accept attribute is used to restrict selectable file.</li>
+                <li>when I upload the file I always need to think about Remote code Execution.</li>
+            </ul>
+            
+            <h3>Creating a Web Shell</h3>
+            <ul>
+                <li>a web shell is a small script that accepts commands through HTTP parameters and executes them on the server.</li>
+                <li>after uploading web shell I will try to send some http request with using curl with some parameters.</li>
+            </ul>
+            <pre><span class="comment">&lt;?php
+if(isset($_GET['cmd'])) {
+    echo "&lt;pre&gt;" . shell_exec($_GET['cmd']) . "&lt;/pre&gt;";
+}
+?&gt;</span></pre>
+            <ul>
+                <li><code>curl "http://10.114.187.255/uploads/documents/shell.phtml?cmd=whoami"</code></li>
+                <li>in /etc/passwd file I can figure out that who are they other person in this system.</li>
+                <li>I can use any commands while I am using this web shell and curl tool with commands.</li>
+                <li>but in real life there is always a URL decoding to prevents my parameters because of this restriction I need to have a reverse web shell.</li>
+                <li>first I set up a listener: <code>nc -lvnp 4444(or any port)</code></li>
+                <li>and in the second terminal I trigger the reverse shell through the web shell I need to use URL-encode.</li>
+            </ul>
+
+            <h2><i class="fas fa-bomb"></i> Enumeration & Exploit Search</h2>
+            <ul>
+                <li><strong>Enumeration -></strong> first of all everything starts with a nmap scan and I can use -oN parameter to use it while I am reporting.</li>
+                <li>after nmap scan when I find a open port with a version number I can look it up online like " &lt;ssh version&gt; exploit ".</li>
+                <li>instead of using this I can use searchsploit to search for exploits directly in Linux.</li>
+                <li>when I try to find an exploit I need to use Metasploit using msfconsole.</li>
+                <li>then I need to search for my exploitable thing: <code>search unrealircd</code></li>
+                <li>and then start use one of them with <code>use &lt;number&gt;</code></li>
+                <li>to see the required areas type <code>show options</code> to learn about exploit.</li>
+                <li>and with <code>set RHOST &lt;target ip&gt;</code></li>
+                <li>and then try to select a payload with <code>show payloads</code></li>
+                <li>to use selected payload I need to type <code>set payload &lt;selected payload's name&gt;</code></li>
+                <li>and I need to see required parts of the payload and I need to type <code>show options</code></li>
+                <li>with <code>set LHOST &lt;my_ip&gt;</code> I need to listen on my machine.</li>
+                <li><code>set LPORT 443</code> -> to set my port.</li>
+            </ul>
+
+            <h2><i class="fas fa-angle-double-up"></i> Privilege Escalation</h2>
+            <ul>
+                <li><strong>privilege escalation -></strong> we will try to be a better user in a system.</li>
+                <li><code>find / -name password* 2>/dev/null</code> with this command try to find any file which contains password in its name.</li>
+                <li>when I find a password for root user I would use <code>ssh@&lt;ip_address&gt;</code> and root's password.</li>
+            </ul>
+
+            <h2><i class="fas fa-project-diagram"></i> Cyber Kill Chain</h2>
+            <ul>
+                <li><strong>Reconnaissance -></strong> collecting information about system.</li>
+                <li><strong>Weaponisation -></strong> the attacker creates some payloads.</li>
+                <li><strong>Delivery -></strong> the attacker sends the weaponized payload.</li>
+                <li><strong>Exploitation -></strong> the payload exploits a vulnerability in the target system.</li>
+                <li><strong>Installation -></strong> the payload exploits a vulnerability.</li>
+                <li><strong>Command & Control(C2) -></strong> using the installed backdoor.</li>
+                <li><strong>Actions on Objects -></strong> the attacker can now carry out further actions.</li>
+            </ul>
+            <p><strong>WSTG -></strong> OWASP's web Penetration Testing framework.</p>
+
+            <h2><i class="fas fa-eye"></i> Passive Reconnaissance -></h2>
+            <ul>
+                <li>first tool is <code>whois &lt;domain&gt;</code></li>
+                <li>and also there is modern tool that named rdap instead of whois.</li>
+                <li><code>curl -s https://rdap.verisign.com/com/v1/domain/tryhackme.com | jq .</code></li>
+                <li>I can use it with this command. <code>jq .</code> means -> proper json format.</li>
+                <li>Online alternatives (if the whois command behaves unexpectedly):
+                    <ul>
+                        <li>https://whois.icann.org/ (legacy WHOIS)</li>
+                        <li>https://lookup.icann.org/ (modern RDAP-focused lookup)</li>
+                        <li>https://www.whoxy.com/ (historical WHOIS snapshots, free limited use)</li>
+                    </ul>
+                </li>
+                <li><strong>Name Server Lookup -></strong>
+                    <ul>
+                        <li><code>nslookup DOMAIN_NAME</code></li>
+                        <li><code>nslookup -type=TYPE DOAMIN_NAME [SERVER]</code></li>
+                        <li>like: <code>nslookup -type=A tryhackme.com 1.1.1.1</code></li>
+                        <li><code>nslookup -type=MX tryhackme.com</code></li>
+                    </ul>
+                </li>
+                <li>other modern tool -> <code>dig</code>
+                    <ul>
+                        <li><code>dig [@server] DOMAIN_NAME [TYPE]</code></li>
+                        <li><code>dig @1.1.1.1 tryhackme.com MX</code></li>
+                    </ul>
+                </li>
+                <li>DNS dumpster -> it is the best name server lookup tool.</li>
+                <li>Shodan is a search engine for internet-connected devices.
+                    <ul>
+                        <li><code>hostname:tryhackme.com</code> matches a specific hostname.</li>
+                        <li><code>org:"TryHackMe"</code> filters by organisation name.</li>
+                        <li><code>port:443 country:US</code> filters by port and country.</li>
+                        <li><code>http.component:"wordpress"</code> identifies technology stack (if exposed).</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2><i class="fas fa-search-plus"></i> active reconnaissance -></h2>
+            <ul>
+                <li>ping</li>
+                <li>Many modern sites also support HTTP/3, which uses the QUIC protocol. UDP 443 FASTER THAN the other HTTP/1 and HTTP/2.</li>
+                <li>traceroute</li>
+                <li>on linux for bypassing the traceroute filters I can use <code>traceroute -T &lt;ip addresses&gt;</code> for ICMP I can use <code>traceroute -I &lt;ip_addresses&gt;</code>.</li>
+                <li>for ipv6 I can use <code>traceroute6</code>.</li>
+                <li>I can also use <code>mtr</code> which stands for My trace route has a GUI and also real-time.</li>
+                <li><code>telnet</code> → teletype Network 23 telnet sends all data in cleartext the secure alternative is SSH. telnet can not handle encrypted connections.</li>
+                <li>For https I can use <code>curl —head https://&lt;ip_address&gt;</code> or <code>openssl s_client -connect &lt;ip_address&gt;</code>.</li>
+                <li>when I use telnet I connect through a port and I use commands to get some informations like <code>GET /HTTP/1.1</code> using mostly GET.</li>
+                <li><code>nc</code> → netcat
+                    <ul>
+                        <li><code>-l</code> → listen mode</li>
+                        <li><code>-p</code> → specify port</li>
+                        <li><code>-n</code> → numeric only → no DNS resolution</li>
+                        <li><code>-v</code> → verbose output</li>
+                        <li><code>-k</code> → keep listening after the clients disconnect</li>
+                        <li>for ipv6 listening I can use <code>-6</code></li>
+                    </ul>
+                </li>
+                <li>If I need encrypted data transfer I can use <code>ncat —ssl</code></li>
+                <li>FTP → 21</li>
+                <li>SMTPS → 465</li>
+            </ul>
+
+            <h2><i class="fas fa-file-alt"></i> Report Format</h2>
+            <ul>
+                <li><strong>Who:</strong> Which user logs in, runs the command, or downloads the file</li>
+                <li><strong>What:</strong> What exact action or event sequence was performed</li>
+                <li><strong>When:</strong> When exactly did the suspicious activity start and ended</li>
+                <li><strong>Where:</strong> Which device, IP, or website was involved in the alert</li>
+                <li><strong>Why:</strong> The most important W, the reasoning for your final verdict</li>
+                <li>some kind of commands run on DMZ-MSEXCHANGE-2013 host machine</li>
+                <li>and this alert created at Mar 27th 19:56</li>
+                <li>instead of using blocklist for files I would be better to use allowlist</li>
+                <li>for reports I need to give vulnerability - severity - remediation</li>
+            </ul>
+
+            <h2><i class="fas fa-globe"></i> protocols →</h2>
+            <ul>
+                <li>telnet → 23 remote HTTP connection</li>
+                <li>HTTP → 80</li>
+                <li><strong>HTTP servers →</strong> nginx, apache, IIS, Litespeed,canddy, node.js</li>
+                <li>HTTP/3 → uses QUIC instead of TCP</li>
+            </ul>
+
+            <h3>FTP → FIle transfer protocol</h3>
+            <ul>
+                <li>FTP send data in cleartext for this reason we use:</li>
+                <li><strong>STFP →</strong> SSH FILE TRANSFER PROTOCOL</li>
+                <li><strong>FTPS →</strong> FTP Secure adds TLS encryption to the FTP protcol on 990</li>
+                <li><strong>SCP →</strong> Secure Copy Protocol also runs over SSH</li>
+                <li>STAT → additional information</li>
+                <li>SYST → SYSTEM TYPE OF THE TARGET</li>
+                <li>PASV → passive mode</li>
+                <li>In active mode data sends over on port 21 WAF and firewalls sometimes drops it. In passive mode data send over on port 1023 this is more firewall-friendly.</li>
+                <li>TYPE A → switches the file transfer mode to ASCII while TYPE I switches the file transfer mode to binary.</li>
+                <li><strong>USING an FTP client:</strong>
+                    <ul>
+                        <li><code>ls</code> → lists the files,</li>
+                        <li><code>ascii</code> → switches to ASCII mode since the target is a text file</li>
+                        <li><code>get FILENAME</code> → initiates the file transfer by establishing a separate data channel</li>
+                        <li>some ftp servers allows anonymous login: <code>USER anonymous</code></li>
+                    </ul>
+                </li>
+                <li><strong>FTP servers →</strong> 
+                    <ul>
+                        <li>vsftpd → very secure FTP daemon</li>
+                        <li>ProFTPD → configurable and modular</li>
+                        <li>Pure-FTPd→ focuses on security and simplcity</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h3>SMTP →</h3>
+            <ul>
+                <li><strong>MUA →</strong> Mail User Agent → The email client like Outlook</li>
+                <li><strong>MSA →</strong> Mail Submisson Agent → receives mail from MUA → the post office employee</li>
+                <li><strong>MTA →</strong> Mail Transfer Agent → routes and delivers mail between servers</li>
+                <li><strong>MDA →</strong> Mail Delivery Agent → Stores the email in the recipient’s mail box</li>
+                <li>port 25 → traditional SMTP port</li>
+                <li>port 587 → used by email clients to submit messages to their mail server</li>
+                <li>port 465 for SMTPS</li>
+                <li>I can use helo or ehlo for typing a email with telnet after my email I need to type “.” to end to email</li>
+            </ul>
+
+            <h3>POP3 & IMAP</h3>
+            <ul>
+                <li><strong>POP3 →</strong> port 110 this is default POP3 port in cleartext</li>
+                <li>995 → is used for POP3S encrypted connection</li>
+                <li>The command LIST provides a list of new messages on the server and RETR 1 retrieves the first message in the list.</li>
+                <li>POP3 behaviour : Download and delete. When you want to access email offline and have limited or unreliable internet connectivity.</li>
+                <li><strong>MAP →</strong> Internet Message Access Protocol → makes it possible to keep email synchronised across multiple devices.</li>
+                <li>port 143 is the default IMAP port</li>
+                <li>port 993 → is used for IMAPS the connection is encrypted from the start.</li>
+            </ul>
+
+            <h2><i class="fas fa-skull-crossbones"></i> Attack Types</h2>
+            <ul>
+                <li>Sniffing Attacks</li>
+                <li>IoT devices that often use unencrypted protocols for communication</li>
+            </ul>
+
+            <h3>Packet Capture Tools -></h3>
+            <ul>
+                <li><strong>Tcpdump -></strong> it is lightweight and availavle on most Linux systems.</li>
+                <li><strong>Wireshark -></strong> GUI program.</li>
+                <li><strong>Tshark -></strong>it is a CLI alternative to Wireshark.</li>
+                <li><strong>tcpflow -></strong> for reassembling TCP streams.</li>
+                <li><strong>ngrep -></strong> for pattern matching in network traffic.</li>
+                <li><strong>NetworkMiner -></strong> for extracting files and images from captured traffic.</li>
+                <li>using tcpdump for POP3 capturing -> <code>tcpdump port 110 -A</code></li>
+                <li>-A refers -> displays the contents of captured packets is ASCII format. making cleartext credentials readable in the output.</li>
+                <li><code>tcpdump host &lt;ip_address&gt; -A</code> -> capture traffic from a specific host</li>
+                <li><code>tcpdump port 80 -A</code></li>
+                <li><code>tcpdump -w capture.pcap</code></li>
+                <li><code>tcpdump -r capture.pcap -A</code></li>
+            </ul>
+
+            <h3>TLS & MITM</h3>
+            <ul>
+                <li>TLS -> Transport Layer Security</li>
+                <li>SSL and TLS in Presentation Layer</li>
+                <li>Man-in-the-Middle(MITM) attack</li>
+                <li><strong>ARP Spoofing -></strong> The attacker sends forged ARP messages to associate their MAC address with the IP address of the default gateway or target system.</li>
+                <li><strong>DNS Spoofing -></strong> involves providing false DNS response to redirect victims to attacker-controlled servers.</li>
+                <li><strong>Rogue Access Points -></strong> are fake wireless access points set up by attackers. When victims connect to these networks all their traffic flows through the attacker's system.</li>
+                <li><strong>BGP Hijacking -></strong></li>
+            </ul>
+
+            <h3>Tools for MITM Attacks -></h3>
+            <ul>
+                <li><strong>Bettercap -></strong> ARP spoofing, DNS spoofing, HTTP/HTTPS proxying</li>
+                <li><strong>Ettercap -></strong> MITM attacks of LANs.</li>
+                <li><strong>mitmproxy -></strong> is an interactive HTTPS proxy that allows inspection and modification on traffic.</li>
+                <li><strong>Responder -></strong> Responder listens for these broadcast queries and responds with its own IP address, tricking victims into sending authentication credentials to the attacker.</li>
+                <li>HSTS -> HTTPS Strict Transport Security -> tells browsers to only connect via HTTPS.</li>
+            </ul>
+
+            <h2><i class="fas fa-key"></i> SSH Key Generation -></h2>
+            <ul>
+                <li>to set up key_base authentication, generate a key pair using ssh-keygen:</li>
+                <li><code>ssh-keygen -t ed25519 -C "my_email"</code></li>
+                <li><code>ssh-keygen -t rsa -b 4096 -C "my_email"</code></li>
+                <li>our private key is stored in ~/.ssh/id_ed25519 (or ~/.ssh/id_rsa)</li>
+                <li>To enable key-based login on a server, add your public key to the ~/.ssh/authorized_keys file on the remote system: <code>ssh-copy-id mark@10.113.167.16</code></li>
+            </ul>
+            
+            <pre><span class="comment"># Connect on a non-standard port</span>
+<span class="cmd">ssh</span> <span class="flag">-p</span> <span class="arg">2222 mark@10.113.167.16</span>
+
+<span class="comment"># Use a specific private key</span>
+<span class="cmd">ssh</span> <span class="flag">-i</span> <span class="arg">~/.ssh/custom_key mark@10.113.167.16</span>
+
+<span class="comment"># Jump through a bastion/jump host to reach an internal server</span>
+<span class="cmd">ssh</span> <span class="flag">-J</span> <span class="arg">bastion.example.com mark@internal-server</span>
+
+<span class="comment"># Local port forwarding (access remote service through local port)</span>
+<span class="cmd">ssh</span> <span class="flag">-L</span> <span class="arg">8080:localhost:80 mark@10.113.167.16</span>
+
+<span class="comment"># Dynamic port forwarding (SOCKS proxy)</span>
+<span class="cmd">ssh</span> <span class="flag">-D</span> <span class="arg">9050 mark@10.113.167.16</span>
+
+<span class="comment"># Run a single command without interactive shell</span>
+<span class="cmd">ssh</span> <span class="arg">mark@10.113.167.16 "cat /etc/passwd"</span></pre>
+
+            <ul>
+                <li>For frequent connections, you can create shortcuts in ~/.ssh/config. With this configuration, you can simply type <code>ssh webserver</code> instead of the full command.</li>
+                <li>provides secure file transfer capabilities through several methods:</li>
+                <li><strong>sftp mark@10.113.167.16 -></strong> SSH File Transfer Protocol</li>
+                <li><strong>scp -></strong> secure copy protocol -> <code>scp mark@10.113.167.16:/home/mark/archive.tar.gz ~/</code></li>
+                <li># Copy from local to remote: <code>scp backup.tar.bz2 mark@10.113.167.16:/home/mark/</code></li>
+                <li>preferred for transferring large amounts of data or synchronising directories, as it only transfers changed portions of files: <code>rsync -avz -e ssh /local/directory/ mark@10.113.167.16:/remote/directory/</code></li>
+            </ul>
+
+            <h2><i class="fas fa-unlock-alt"></i> Password attack tools -></h2>
+            <ul>
+                <li><strong>Medusa</strong> is similar to Hydra</li>
+                <li><strong>Ncrack -></strong> high-speed parallel authentication testing</li>
+                <li><strong>CrackMapExec -></strong> can spray passwords across SMB,WinRM, LDAP</li>
+                <li><strong>Burpsuit Intruder</strong></li>
+                <li><strong>Hashcat and John the ripper -></strong> are used for cracking password hashes offline rather than attacking live services.</li>
+            </ul>
+
+            <h2><i class="fas fa-radar"></i> Nmap</h2>
+            <ul>
+                <li>Subnets with /16, which means that the subnet mask can be written as 255.255.0.0</li>
+                <li>Subnets with /24, which indicates that the subnet mask can be expressed as 255.255.255.0</li>
+                <li>ARP scan is possible only if you are on the same subnet as the target systems.</li>
+                <li><code>nmap -PR -sn TARGETS</code>, where -PR indicates that you only want an ARP scan.</li>
+                <li>it is wise to keep in mind that many firewalls block ICMP.</li>
+                <li>However, rDNS records aren’t always configured or accurate, so results may be missing or misleading.</li>
+                <li>I can use <code>-R</code> to start a reverse dns on nmap.</li>
+                <li>Note that we can use <code>-F</code> to enable fast mode and decrease the number of scanned ports from 1000 to 100 most common ports.</li>
+                <li>don't use T5 you can use T4 instead.</li>
+                <li>For example, <code>--max-rate 10</code> or <code>--max-rate=10</code> ensures that your scanner is not sending more than ten packets per second.</li>
+                <li>For instance, <code>--min-parallelism=512</code> pushes nmap to maintain at least 512 probes in parallel; these 512 probes are related to host discovery and open ports.</li>
+                <li>The null scan does not set any flag; all six flag bits are set to zero. You can choose this scan using the <code>-sN</code> option.</li>
+                <li>I need to use sudo if I want to use <code>-sN</code> option.</li>
+                <li><code>nmap -sV --version-light -p143 10.113.180.174</code></li>
+            </ul>
+
+        </article>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const icon = themeToggle.querySelector('i');
+        
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            icon.className = newTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        });
+
+        if (savedTheme === 'light') {
+            icon.className = 'fas fa-sun';
+        }
+    </script>
+</body>
+</html>

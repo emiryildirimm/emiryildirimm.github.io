@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Networking, Web & Cloud Concepts | Emir Yildirim</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <style>
+        /* CSS Same as before */
+        :root {
+            --bg-1: #f8fafc; --bg-2: #e2e8f0; --bg-3: #f1f5f9; --bg-4: #cbd5e1;
+            --text-main: #0f172a; --text-muted: #475569;
+            --nav-bg: rgba(255, 255, 255, 0.8); --card-bg: rgba(255, 255, 255, 0.7);
+            --code-bg: #1e293b; --code-text: #e2e8f0; --border-color: #cbd5e1;
+            --accent: #2563eb; --accent-hover: #1d4ed8; --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-1: #0f172a; --bg-2: #1e293b; --bg-3: #020617; --bg-4: #172554;
+            --text-main: #ffffff; --text-muted: #94a3b8;
+            --nav-bg: rgba(15, 23, 42, 0.8); --card-bg: rgba(30, 41, 59, 0.7);
+            --code-bg: #020617; --code-text: #e2e8f0; --border-color: #334155;
+            --accent: #3b82f6; --accent-hover: #60a5fa; --shadow: rgba(59, 130, 246, 0.4);
+        }
+
+        body {
+            margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4));
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
+            line-height: 1.7; min-height: 100vh; transition: color 0.4s ease, background 0.4s ease;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .navbar { background: var(--nav-bg); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; transition: background 0.4s ease, border-color 0.4s ease; }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        #theme-toggle { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; margin-left: 25px; cursor: pointer; transition: color 0.3s, transform 0.3s; }
+        #theme-toggle:hover { color: var(--accent); transform: scale(1.1); }
+
+        .article-container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.95rem; margin-bottom: 30px; transition: color 0.3s; }
+        .back-link:hover { color: var(--accent); }
+
+        .article-header { text-align: center; padding: 30px 20px 40px; border-bottom: 1px solid var(--border-color); margin-bottom: 40px; }
+        .article-header h1 { font-size: 2.5rem; color: var(--accent); margin: 0 0 20px 0; line-height: 1.3; }
+        .article-meta { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; color: var(--text-muted); font-size: 0.95rem; }
+        .article-meta span { display: flex; align-items: center; gap: 6px; }
+        .article-meta i { color: var(--accent); }
+
+        .article-content { background: var(--card-bg); backdrop-filter: blur(10px); padding: 40px; border-radius: 15px; border-left: 4px solid var(--accent); transition: background 0.4s ease, border-color 0.4s ease; }
+        .article-content h2 { color: var(--accent); font-size: 1.7rem; margin-top: 40px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .article-content h2:first-child { margin-top: 0; }
+        .article-content h3 { color: var(--text-main); font-size: 1.25rem; margin-top: 25px; margin-bottom: 10px; }
+        .article-content p { color: var(--text-muted); margin-bottom: 15px; }
+        .article-content strong { color: var(--text-main); }
+        .article-content ul { color: var(--text-muted); margin-bottom: 15px; }
+        .article-content li { margin-bottom: 5px; }
+
+        .lead-paragraph { font-size: 1.1rem; font-style: italic; padding: 20px; background: rgba(59, 130, 246, 0.08); border-left: 3px solid var(--accent); border-radius: 8px; margin-bottom: 30px !important; }
+
+        pre { background: var(--code-bg); color: var(--code-text); padding: 18px 20px; border-radius: 10px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.95rem; border: 1px solid var(--border-color); margin: 15px 0; line-height: 1.5; }
+        code { background: var(--bg-2); color: var(--accent); padding: 2px 7px; border-radius: 5px; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.9em; border: 1px solid var(--border-color); }
+        .info-box { display: flex; gap: 15px; padding: 18px 20px; background: rgba(59, 130, 246, 0.08); border-radius: 10px; margin: 20px 0; border-left: 3px solid var(--accent); }
+        .info-box i { color: var(--accent); font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+        .info-box p { margin: 0; }
+
+        .cmd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; margin: 20px 0; }
+        .cmd-card { background: var(--bg-2); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); transition: transform 0.2s, border-color 0.2s; }
+        .cmd-card:hover { transform: translateY(-2px); border-color: var(--accent); }
+        .cmd-card .cmd-name { font-family: 'Consolas', monospace; color: var(--accent); font-weight: bold; font-size: 0.95rem; margin-bottom: 5px; }
+        .cmd-card .cmd-desc { color: var(--text-muted); font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; padding: 15px 10px; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+            .nav-links a { margin-left: 0; font-size: 0.95rem; }
+            #theme-toggle { margin-left: 5px; }
+            .article-container { margin: 20px auto; padding: 0 15px; }
+            .article-header h1 { font-size: 1.7rem; }
+            .article-content { padding: 25px 20px; }
+            .article-content h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">root@emir:~#</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html">Experience & Projects</a>
+            <a href="blog.html" class="active">MyNotes</a>
+            <a href="daily.html">Personal Space</a>
+            <button id="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+        </div>
+    </nav>
+
+    <div class="article-container">
+        <a href="blog.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to all notes
+        </a>
+
+        <header class="article-header">
+            <h1>Networking, Web & Cloud Concepts</h1>
+            <div class="article-meta">
+                <span><i class="far fa-calendar-alt"></i> March 12, 2026</span>
+                <span><i class="fas fa-tag"></i> Web / Cloud</span>
+                <span><i class="fas fa-clock"></i> ~12 min read</span>
+            </div>
+        </header>
+
+        <article class="article-content">
+
+            <p class="lead-paragraph">
+                A deep dive into how the internet works under the hood. Containing all exact notes regarding common ports, DNS resolution, web architectures, load balancing, and cloud models.
+            </p>
+
+            <h2><i class="fas fa-plug"></i> Common Ports</h2>
+            <div class="cmd-grid">
+                <div class="cmd-card"><div class="cmd-name">FTP -> 21</div></div>
+                <div class="cmd-card"><div class="cmd-name">SSH -> 22</div></div>
+                <div class="cmd-card"><div class="cmd-name">HTTP -> 80</div></div>
+                <div class="cmd-card"><div class="cmd-name">HTTPS -> 443</div></div>
+                <div class="cmd-card"><div class="cmd-name">SMB -> 445</div><div class="cmd-desc">printers use this port mostly</div></div>
+                <div class="cmd-card"><div class="cmd-name">RDP -> 3389</div></div>
+            </div>
+
+            <h2><i class="fas fa-shield-alt"></i> Firewalls and Tunnels</h2>
+            <h3>Firewall Categories -></h3>
+            <ul>
+                <li><strong>Stateful -></strong> device based firewall it will block the entire device.</li>
+                <li><strong>Stateless -></strong> This firewall type uses a static set of rules to determine whether or not individual packets are acceptable or not.</li>
+            </ul>
+
+            <h3>Tunnels & Segmentation</h3>
+            <ul>
+                <li><strong>PPTP -></strong> Point to point Tunneling Protocol -> is the technology that allows the from PPP to travel and leave a network.</li>
+                <li><strong>IPSec -></strong> Internet Protocol Security -> encrypts data using the existing IP framework.</li>
+                <li><strong>VLAN -></strong> (Virtual Local Area Network) -> allows specific devices within a network to be virtually split up. Two other departments will be able to access the internet but not able to communicate with each other although they are connected to the same switch.</li>
+            </ul>
+
+            <h2><i class="fas fa-globe"></i> domains -></h2>
+            <ul>
+                <li>for example tryhackme.com is a domain</li>
+                <li>.com .edu .gov these are TLD stands for Top Level Domain</li>
+                <li>uk .ca .tr these are ccTLD -> country code Top Level Domain</li>
+                <li>tryhackme is a second-level domain</li>
+                <li>and admin.tryhackme.com is a Subdomain which means admin page of the tryhackme</li>
+            </ul>
+
+            <h3>DNS Record Types</h3>
+            <ul>
+                <li><strong>A Record -></strong> These records resolve to ipv4 addresses.</li>
+                <li><strong>AAAA Record -></strong> These record resolve to ipv6 addresses.</li>
+                <li><strong>CNAME Record -></strong></li>
+                <li><strong>MX Record -></strong> These records resolve to the address of the servers that handle the email for the domain you are querying.</li>
+                <li><strong>TXT Record -></strong> TXT Records are free text fields where any text-based data can be stored.</li>
+            </ul>
+
+            <h3>making a DNS request</h3>
+            <ul>
+                <li>1 - first my computer first checks its local cache to see if you've previously looked up.</li>
+                <li>2 - Recursive DNS Server is usually provided by my ISP. This server also has a local cache of recently looked up domain names.</li>
+                <li>3 - Root DNS Server -> backbone of the internet their job is to redirect me to correct Top Level Domain Server.</li>
+                <li>4 - authoritative server -> TLD servers hold records for where to find the authoritative server to answer the DNS request for example cloudflare.com serves as a authoritative server.</li>
+            </ul>
+            
+            <p><strong>nslookup(name server lookup) -></strong> it helps me discover the IP address linked to a domain name. Find which domain owns an IP address.</p>
+
+            <h2><i class="fas fa-link"></i> Web Protocols & URL Anatomy</h2>
+            <p><strong>HTTP in Detail</strong></p>
+            <p>HTTPS provides us encrypted data.</p>
+            
+            <h3>What is URL</h3>
+            <ul>
+                <li><strong>https:// -></strong> what protocol to use for accessing the resource.</li>
+                <li><strong>user:password -></strong> some services require authentication to log in.</li>
+                <li><strong>tryhackme.com -> host -></strong> the domain name or ip.</li>
+                <li><strong>:80 -></strong> The port that I am going to connect to.</li>
+                <li><strong>path -></strong> The file name or location of the resource I am trying to access.</li>
+                <li><strong>Query string -> ?id -></strong> extra bits of information.</li>
+                <li><strong>Fragment -> #task -></strong> this is commonly used for pages with long content and can have a certain part of the page.</li>
+            </ul>
+
+            <h3>HTTP Status codes</h3>
+            <ul>
+                <li>100-199 -> Information Response</li>
+                <li>200 - 299 -> Success</li>
+                <li>300-399 -> Redirection</li>
+                <li>400-499 -> Client Errors</li>
+                <li>500-599 -> Server Errors</li>
+            </ul>
+            <div class="cmd-grid">
+                <div class="cmd-card"><div class="cmd-name">200 -> ok</div></div>
+                <div class="cmd-card"><div class="cmd-name">201 -> created</div></div>
+                <div class="cmd-card"><div class="cmd-name">302 -> Found</div></div>
+                <div class="cmd-card"><div class="cmd-name">400 -> Bad request</div></div>
+                <div class="cmd-card"><div class="cmd-name">401 -> Not Authorised</div></div>
+                <div class="cmd-card"><div class="cmd-name">403 -> Forbidden</div></div>
+                <div class="cmd-card"><div class="cmd-name">405 -> Method Not Allowed</div></div>
+                <div class="cmd-card"><div class="cmd-name">404 -> Page Not found</div></div>
+                <div class="cmd-card"><div class="cmd-name">500 -> Internal Service Error</div></div>
+                <div class="cmd-card"><div class="cmd-name">503 -> Service Unavailable</div></div>
+            </div>
+
+            <h2><i class="fas fa-server"></i> Web Infrastructure</h2>
+            <ul>
+                <li><strong>Load balancers -></strong> load balancers provide two main features, ensuring high traffic websites can handle the load and providing a failover if a servers becomes unresponsive.</li>
+                <li><strong>round-robin -></strong> this algorithm sends it to each server in turn.</li>
+                <li><strong>weighted -></strong> sends it to the least busy server.</li>
+                <li>Load balancers also perform periodic checks with each server to ensure they are running correctly, this is called a health check.</li>
+                <li><strong>CDN -> Content Delivery Networks -></strong> It allows you to host static files from your website and host them across thousands of servers all over the world.</li>
+                <li><strong>Databases :</strong> Often websites will need a way of storing information for their users.</li>
+                <li><strong>WAF -></strong> A WAF sits between your web request and the web server; its primary purpose is to protect the webserver from hacking or denial of service attacks.</li>
+            </ul>
+
+            <h2><i class="fas fa-cloud"></i> Cloud Models</h2>
+            <ul>
+                <li><strong>IaaS -> Infrastructure as a Service -></strong> You rent basic computing resources such as virtual servers, storage and networking -> Renting a empty apartment.</li>
+                <li><strong>PaaS -> Platform as a Service -></strong> You focus on building, deploying, and running your application without worrying about servers. Renting a semi-furnished apartment.</li>
+                <li><strong>SaaS -> Software as a Service -></strong> You use a complete application over the internet. For example Gmail or Zoom -> Staying in a hotel.</li>
+            </ul>
+
+            <h2><i class="fas fa-terminal"></i> Basic CLI Commands</h2>
+            <ul>
+                <li><strong>uname -a -></strong> name of the machine in Linux</li>
+                <li><strong>df -h -></strong> human readable version and also disk space</li>
+                <li>in windows you need to type just <code>cd</code> to learn where you are</li>
+                <li>in windows I can <code>whoami</code> in advance</li>
+                <li>in windows I can use <code>hostname</code> instead of uname</li>
+            </ul>
+
+            <div class="info-box">
+                <i class="fas fa-microchip"></i>
+                <p><strong>BIOS / UEFI -></strong> Note: We will often see the term mentioned instead of UEFI . does the same as , but has mainly been replaced by.</p>
+            </div>
+
+        </article>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const icon = themeToggle.querySelector('i');
+        
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            icon.className = newTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        });
+
+        if (savedTheme === 'light') {
+            icon.className = 'fas fa-sun';
+        }
+    </script>
+</body>
+</html>

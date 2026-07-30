@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity Fundamentals & Concepts | Emir Yildirim</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <style>
+        /* CSS Same as before */
+        :root {
+            --bg-1: #f8fafc; --bg-2: #e2e8f0; --bg-3: #f1f5f9; --bg-4: #cbd5e1;
+            --text-main: #0f172a; --text-muted: #475569;
+            --nav-bg: rgba(255, 255, 255, 0.8); --card-bg: rgba(255, 255, 255, 0.7);
+            --code-bg: #1e293b; --code-text: #e2e8f0; --border-color: #cbd5e1;
+            --accent: #2563eb; --accent-hover: #1d4ed8; --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="dark"] {
+            --bg-1: #0f172a; --bg-2: #1e293b; --bg-3: #020617; --bg-4: #172554;
+            --text-main: #ffffff; --text-muted: #94a3b8;
+            --nav-bg: rgba(15, 23, 42, 0.8); --card-bg: rgba(30, 41, 59, 0.7);
+            --code-bg: #020617; --code-text: #e2e8f0; --border-color: #334155;
+            --accent: #3b82f6; --accent-hover: #60a5fa; --shadow: rgba(59, 130, 246, 0.4);
+        }
+
+        body {
+            margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            background: linear-gradient(-45deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4));
+            background-size: 400% 400%; animation: gradientBG 15s ease infinite;
+            line-height: 1.7; min-height: 100vh; transition: color 0.4s ease, background 0.4s ease;
+        }
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+        .navbar { background: var(--nav-bg); backdrop-filter: blur(10px); padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); position: sticky; top: 0; z-index: 100; transition: background 0.4s ease, border-color 0.4s ease; }
+        .nav-logo { font-size: 1.5rem; font-weight: bold; color: var(--accent); text-decoration: none; }
+        .nav-links { display: flex; align-items: center; }
+        .nav-links a { color: var(--text-main); text-decoration: none; margin-left: 20px; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        #theme-toggle { background: transparent; border: none; color: var(--text-main); font-size: 1.2rem; margin-left: 25px; cursor: pointer; transition: color 0.3s, transform 0.3s; }
+        #theme-toggle:hover { color: var(--accent); transform: scale(1.1); }
+
+        .article-container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: var(--text-muted); text-decoration: none; font-size: 0.95rem; margin-bottom: 30px; transition: color 0.3s; }
+        .back-link:hover { color: var(--accent); }
+
+        .article-header { text-align: center; padding: 30px 20px 40px; border-bottom: 1px solid var(--border-color); margin-bottom: 40px; }
+        .article-header h1 { font-size: 2.5rem; color: var(--accent); margin: 0 0 20px 0; line-height: 1.3; }
+        .article-meta { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; color: var(--text-muted); font-size: 0.95rem; }
+        .article-meta span { display: flex; align-items: center; gap: 6px; }
+        .article-meta i { color: var(--accent); }
+
+        .article-content { background: var(--card-bg); backdrop-filter: blur(10px); padding: 40px; border-radius: 15px; border-left: 4px solid var(--accent); transition: background 0.4s ease, border-color 0.4s ease; }
+        .article-content h2 { color: var(--accent); font-size: 1.7rem; margin-top: 40px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .article-content h2:first-child { margin-top: 0; }
+        .article-content h3 { color: var(--text-main); font-size: 1.25rem; margin-top: 25px; margin-bottom: 10px; }
+        .article-content p { color: var(--text-muted); margin-bottom: 15px; }
+        .article-content strong { color: var(--text-main); }
+        .article-content ul { color: var(--text-muted); margin-bottom: 15px; }
+        .article-content li { margin-bottom: 5px; }
+
+        .lead-paragraph { font-size: 1.1rem; font-style: italic; padding: 20px; background: rgba(59, 130, 246, 0.08); border-left: 3px solid var(--accent); border-radius: 8px; margin-bottom: 30px !important; }
+
+        pre { background: var(--code-bg); color: var(--code-text); padding: 18px 20px; border-radius: 10px; overflow-x: auto; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.95rem; border: 1px solid var(--border-color); margin: 15px 0; line-height: 1.5; }
+        code { background: var(--bg-2); color: var(--accent); padding: 2px 7px; border-radius: 5px; font-family: 'Consolas', 'Monaco', 'Courier New', monospace; font-size: 0.9em; border: 1px solid var(--border-color); }
+        .info-box { display: flex; gap: 15px; padding: 18px 20px; background: rgba(59, 130, 246, 0.08); border-radius: 10px; margin: 20px 0; border-left: 3px solid var(--accent); }
+        .info-box i { color: var(--accent); font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+        .info-box p { margin: 0; }
+
+        @media (max-width: 768px) {
+            .navbar { flex-direction: column; padding: 15px 10px; gap: 15px; }
+            .nav-links { flex-wrap: wrap; justify-content: center; gap: 12px; }
+            .nav-links a { margin-left: 0; font-size: 0.95rem; }
+            #theme-toggle { margin-left: 5px; }
+            .article-container { margin: 20px auto; padding: 0 15px; }
+            .article-header h1 { font-size: 1.7rem; }
+            .article-content { padding: 25px 20px; }
+            .article-content h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-logo">root@emir:~#</a>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="projects.html">Experience & Projects</a>
+            <a href="blog.html" class="active">MyNotes</a>
+            <a href="daily.html">Personal Space</a>
+            <button id="theme-toggle" title="Toggle Theme"><i class="fas fa-moon"></i></button>
+        </div>
+    </nav>
+
+    <div class="article-container">
+        <a href="blog.html" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to all notes
+        </a>
+
+        <header class="article-header">
+            <h1>Cybersecurity Fundamentals & Concepts</h1>
+            <div class="article-meta">
+                <span><i class="far fa-calendar-alt"></i> March 12, 2026</span>
+                <span><i class="fas fa-tag"></i> Fundamentals</span>
+                <span><i class="fas fa-clock"></i> ~10 min read</span>
+            </div>
+        </header>
+
+        <article class="article-content">
+
+            <p class="lead-paragraph">
+                A compilation of my exact notes on basic cybersecurity roles, the OSI model, networking fundamentals, and core concepts like the CIA triad and cryptography.
+            </p>
+
+            <h2><i class="fas fa-users"></i> Cybersecurity Roles</h2>
+            <ul>
+                <li><strong>Security Analysts:</strong> Security Analysts are responsible for analyzing the security of companies.</li>
+                <li><strong>Security Engineers:</strong> Security Engineers develop and implement security solutions using threats.</li>
+                <li><strong>Incident Responders:</strong> Incident responders responds to attacks MTTD, MTTA and MTTR - the meantime to detect.</li>
+                <li><strong>Digital Forensics Examiners:</strong> Digital Forensics Examiners work like a detective.</li>
+                <li><strong>Malware Analysts:</strong> malware analyst's work involves analysing suspicious programs, discovering what they do and writing reports about their findings.</li>
+                <li><strong>Penetration Testers:</strong> Penetration Testers try to find vulnerabilities on a system.</li>
+                <li><strong>Red Teamers:</strong> Red Teamers are similar with Penetration testers but they fully act like a Hacker.</li>
+            </ul>
+
+            <h2><i class="fas fa-network-wired"></i> Networking Hardware & Topologies</h2>
+            <p><strong>MAC Addresses:</strong> <code>a4:c3:f0:85:ac:2d</code> -> the first six characters the company that made the "network interface" and the last six is a "unique number".</p>
+
+            <h3>Network Topologies</h3>
+            <ul>
+                <li><strong>Star Topology:</strong> via a central networking device such as switch or hub and the other devices are individually connected.</li>
+                <li><strong>Bus Topology:</strong> There is a backbone cable if this cable break all the network is gonna be break but this topology is more cost efficient. This topology looks like a leaf on a tree.</li>
+                <li><strong>Ring Topology:</strong> Devices such as computers are connected directly to each other to form a loop. A ring topology works by sending data across the loop until it reaches the destined device.</li>
+            </ul>
+
+            <h3>Networking Devices</h3>
+            <ul>
+                <li><strong>What is a Switch:</strong> Switches are dedicated devices within a network that are designed to aggregate multiple other devices such as computers, printers, or any other networking-capable device using ethernet. Switches can track of what device is connected to the which port. And with this way it is very easy to send the data to responsible device.</li>
+                <li><strong>Router:</strong> Router's job is connect networks and pass data between them.</li>
+            </ul>
+
+            <h2><i class="fas fa-project-diagram"></i> Core Protocols</h2>
+            <ul>
+                <li><strong>ICMP:</strong> a network-layer protocol used by devices like routers to diagnose communication issues and report errors. ping sends 6 ICMP packets. <code>ping -c 4</code> says send 4 ICMP packet.</li>
+                <li><strong>ARP:</strong> is responsible for finding the MAC address related to a specific IP address. <em>ARP Request</em> -> a message is broadcasted on the network to other devices asking "What is the mac address that owns this IP address". <em>ARP Reply</em> -> they will only respond if they own that IP address and will send an ARP reply with it's MAC address and ARP keeps it in the "ARP cache".</li>
+                <li><strong>DHCP(Dynamic Host Configuration Protocol):</strong> When a device connects to a network, if it has not already been manually assigned an IP address it sends out a request "DHCP" to see if any DHCP servers are on the network. and then "DHCP Offer" -> "DHCP Request" -> "DHCP ACK".</li>
+            </ul>
+
+            <h2><i class="fas fa-layer-group"></i> OSI -> (Open Systems Interconnection Model)</h2>
+            <p><strong>encapsulation -></strong> pieces of information get added to data.</p>
+            <ul>
+                <li><strong>Physical -></strong> Devices use electrical signals to transfer data between each other in a binary numbering system -> Ethernet Cables.</li>
+                <li><strong>Data Link -></strong> NIC => Every device has a Network Interface Card which comes with a unique "MAC" address.</li>
+                <li><strong>Network -></strong> OSPF(Open Shortest Path First) and RIP(Routing Information Protocol) it find the optimal path that data should take to reach a device -> IP.</li>
+                <li><strong>Transport layer -></strong> TCP AND UDP. 
+                    <ul>
+                        <li><strong>TCP(Transmission Control Protocol) -></strong> this protocol is designed with reliability and guarantee in mind. This protocol reserves a constant connection between the two devices for the amount of time. TCP also has error checking function. TCP is significantly slower than UDP.</li>
+                        <li><strong>UDP -></strong> User Datagram Protocol -> it sends the data whether it gets receiver or not. ARP and DHCP use UDP and also video streaming uses UDP.</li>
+                    </ul>
+                </li>
+                <li><strong>Session Layer -></strong> The session layer is also responsible for closing the connection if it hasn't been used in a while or if its is lost. Session can contain "checkpoints" where if the data is lost, only the newest pieces of data are required to be sent saving bandwidth.</li>
+                <li><strong>Presentation -></strong> is a translator for data to and from the application layer. data encryption occur at this layer.</li>
+                <li><strong>Application -></strong> GUI.</li>
+            </ul>
+
+            <h2><i class="fas fa-box-open"></i> Packet vs Frame</h2>
+            <ul>
+                <li><strong>Packet -></strong> is a piece of data from Layer 3 -> IP Header and payload. Packet is a letter.</li>
+                <li><strong>Frame -></strong> is used at Layer 2 adds additional information such as MAC addresses. Frame is an envelope.</li>
+            </ul>
+            <p>this process is called encapsulation.</p>
+
+            <h3>Packet Headers</h3>
+            <ul>
+                <li><strong>Time to live -> TTL -></strong> a numerical value in an IP packet that acts as an expiration limit. It ensures data doesn't circulate endlessly across a network.</li>
+                <li><strong>Checksum -></strong> If any data is changed, this value be different from what was expected and therefore corrupt.</li>
+                <li><strong>Source Address -></strong> The IP address of the device that the packet is being sent from so that data knows where to return.</li>
+                <li><strong>Destination Address -></strong> The device's IP address the packet is being sent to so that data knows where to travel next.</li>
+            </ul>
+            <p>if a data has IP addressing information -> it is a Packet.</p>
+
+            <h3>TCP packets contain various sections</h3>
+            <ul>
+                <li><strong>Source Port -></strong> sender port this value is chosen randomly.</li>
+                <li><strong>Destination Port -></strong> receiver port this value is not chosen at random.</li>
+                <li><strong>Source IP -></strong> this is the ip address of the device that is sending the packet.</li>
+                <li><strong>Destination -></strong> This is the IP address of the device that the packet is destined for.</li>
+                <li><strong>Sequence Number -></strong> the first piece of data transmitted is given a random number.</li>
+                <li><strong>Acknowledgement -></strong> sequence number + 1.</li>
+            </ul>
+            
+            <h3>FLAGS -></h3>
+            <ul>
+                <li>SYN</li>
+                <li>SYN ACK</li>
+                <li>ACK</li>
+                <li>DATA</li>
+                <li><strong>FIN -></strong> Properly close the connection.</li>
+                <li><strong>RST -></strong> This packet abruptly end all communication.</li>
+                <li><strong>ISN -></strong> Initial Sequence Number -> Both computers must agree on the same number sequence for data to be sent in the correct order.</li>
+            </ul>
+
+            <h2><i class="fas fa-shield-alt"></i> Core Security Principles & OS</h2>
+            <h3>CIA Triad</h3>
+            <ul>
+                <li><strong>Confidentiality -></strong> You want to ensure that secret and private files and information are only available to intended person.</li>
+                <li><strong>Integrity -></strong> Everything need to be as planned.</li>
+                <li><strong>Availability -></strong> You want your laptop or smartphone to be available all the time.</li>
+            </ul>
+
+            <ul>
+                <li><strong>AIX -></strong> Unix based operating system.</li>
+                <li>Solaris is a operating system as well.</li>
+                <li>node is start to a javascript application.</li>
+                <li><strong>The caesar Cipher -></strong> A shifts forward 3 spots to become D.</li>
+                <li><strong>symmetric encryption -></strong> the same key encrypts and decrypts the lock.</li>
+                <li><strong>asymmetric encryption -></strong> there are two different keys.</li>
+                <li><strong>Exploit:</strong> A technique or method used to take advantage of a vulnerability to achieve a specific outcome, such as accessing restricted functionality or data.</li>
+            </ul>
+
+        </article>
+    </div>
+
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const icon = themeToggle.querySelector('i');
+        
+        themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            icon.className = newTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+        });
+
+        if (savedTheme === 'light') {
+            icon.className = 'fas fa-sun';
+        }
+    </script>
+</body>
+</html>
